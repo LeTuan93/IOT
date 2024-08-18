@@ -1,0 +1,146 @@
+/* Container for Action Data */
+#action-data {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Style */
+.action-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.action-header h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+/* Filter Section Styles */
+.filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.filter-section .time-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-section label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.filter-section input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.filter-section span {
+    font-size: 18px;
+}
+
+.filter-section button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.filter-section button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Table Styles */
+#action_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#action_table th, #action_table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#action_table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#action_table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination button, .pagination select {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination button:hover, .pagination select:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.pagination select {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    color: #333;
+}
+
+.pagination select:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-section button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pagination button, .pagination select {
+        width: 100%;
+    }
+}

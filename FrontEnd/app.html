@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Menu</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="action.css">
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+    <div class="header">
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" onclick="showSection('sensor-data')">Sensor Data</a>
+                <a href="#" onclick="showSection('action-data')">Action</a>
+                <a href="#" onclick="showSection('profile-page')">Profile</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="container">
+            <div class="item temp" id="tp">
+                <h2>Temperature</h2>
+                <h3 id="nhietdo">20 độ c</h3>
+            </div>
+            <div class="item humid" id="hm">
+                <h2>Humadity</h2>
+                <h3 id="doam">80%</h3>
+            </div>
+            <div class="item light" id="lt">
+                <h2>Light</h2>
+                <h3 id="anhsang">100 lux</h3>
+            </div>
+        </div>
+
+        <div class="container-2">
+            <div class="item-2">
+                <canvas id="chartCanvas"></canvas>
+            </div>
+
+            <div class="item-3">
+                <div class="device light">
+                    <img id="led" src="img/images.jpg" alt="Đèn">
+                    <div class="button-container">
+                        <button class="button-class" onclick="buttonONOFF('ledon')">Bật</button>
+                        <button class="button-class" onclick="buttonONOFF('ledoff')">Tắt</button>
+                    </div>
+                </div>
+                <div class="device fan">
+                    <img id="fan" src="img/fan-static2.png" alt="Quạt">
+                    <div class="button-container">
+                        <button class="button-class" onclick="buttonONOFF('fanon')">Bật</button>
+                        <button class="button-class" onclick="buttonONOFF('fanoff')">Tắt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sensor-data" style ="display: none;">
+        <div class="sensor-header">
+            <h1>SENSOR HISTORY</h1>
+        </div>
+        
+        <div class="search-controls">
+            <div class="search-section">
+                <label for="selectSearch">SEARCH BY:</label>
+                <select id="selectSearch">
+                    <option value="id">ID</option>
+                    <option value="device_id">Device ID</option>
+                    <option value="humidity">Humidity</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="light">Light</option>
+                    <option value="time">Time</option>
+                </select>
+                <input type="text" id="inputSSensor" placeholder="Enter search term...">
+            </div>
+
+            <div class="time-section">
+                <label for="startTimesensor">TIME RANGE:</label>
+                <input type="date" id="startTimesensor" placeholder="Start Time">
+                <span>→</span>
+                <input type="date" id="endTimesensor" placeholder="End Time">
+            </div>
+
+            <div class="search-button">
+                <button id="btnSearchAll">SEARCH</button>
+            </div>
+        </div>
+
+        <div class="sort-controls">
+            <div class="sort-section">
+                <label for="selectSensor">SORT BY:</label>
+                <select id="selectSensor">
+                    <option value="id">ID</option>
+                    <option value="device_id">Device ID</option>
+                    <option value="humidity">Humidity</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="light">Light</option>
+                    <option value="time">Time</option>
+                </select>
+                <button id="SU">ASC</button>
+                <button id="SD">DESC</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="sensor_table">
+                <thead>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Humidity</th>
+                        <th>Temperature</th>
+                        <th>Light</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sensor data rows will be dynamically generated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button id="page-back-sensor">Back</button>
+            <select id="page-selector-sensor"></select>
+            <button id="page-next-sensor">Next</button>
+        </div>
+    </div>
+    <div id="action-data" style ="display: none;">
+        <div class="action-header">
+            <h1>Action History</h1>
+        </div>
+        <div class="filter-section">
+            <div class="time-range">
+                <label for="startTimeaction">Start Time:</label>
+                <input type="date" id="startTimeaction">
+                <span>→</span>
+                <input type="date" id="endTimeaction">
+            </div>
+            <button id="btnDTAC">Search</button>
+        </div>
+        <table id="action_table">
+            <thead>
+                <tr>
+                    <th>Device_ID</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows go here -->
+            </tbody>
+        </table>
+        <div class="pagination">
+            <button id="page-back-action">Back</button>
+            <select id="page-selector-action"></select>
+            <button id="page-next-action">Next</button>
+        </div>
+    </div>
+    <div id="profile-page" style = "display: none;">
+        <div class="profile-container">
+            <div class="profile-image">
+                <img src="profile-pic.jpg" alt="Profile Picture">
+            </div>
+            <div class="profile-info">
+                <h1>Lê Anh Tuấn</h1>
+                <p class="class">Class: D21CQAT01-B</p>
+                <p class="student-id">Student ID: B21DCAT205</p>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    
+</body>
+</html>
