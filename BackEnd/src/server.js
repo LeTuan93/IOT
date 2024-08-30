@@ -3,7 +3,7 @@ const express = require('express')
 const path = require('path')
 const configViewEngine = require('./config/viewEngine')
 const webRoutes = require('./routes/web')
-const connection = require('./config/database')
+const mqttClient = require('./services/mqttClient')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,5 +17,12 @@ app.use('/', webRoutes)
 
 
 app.listen(port, hostname, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+
+  // Kiểm tra kết nối MQTT
+  if (mqttClient.connected) {
+      console.log('MQTT client is connected');
+  } else {
+      console.log('MQTT client is not connected');
+  }
+});

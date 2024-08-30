@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const pageActionSelector = document.getElementById('page-selector-action');
     const actionTableBody = document.querySelector('#action_table tbody');
     const sortActionFieldSelector = document.getElementById('selectActionSort');
+    const limitInput = document.getElementById('limit-input-action'); // Limit input
 
     let actionData = [];
     let currentActionPage = 1;
@@ -17,28 +18,21 @@ document.addEventListener('DOMContentLoaded', function () {
     let searchActionTerm = '';
     let startActionDate = '';
     let endActionDate = '';
-    let isInitialActionLoad = true;
-    
-    const extractNumber = (str) => {
-        const match = str.match(/\d+/); // Extract the first sequence of digits found in the string
-        return match ? parseInt(match[0], 10) : 0; // Convert the match to a number, or return 0 if no digits found
-    };
+    let limit = parseInt(limitInput.value) || 8; // Default limit   
 
     const fetchActionData = () => {
         fetch('/api/action-history')
             .then(response => response.json())
             .then(fetchedData => {
                 actionData = fetchedData;
-                totalActionPages = Math.ceil(actionData.length / 8); // Assuming 8 records per page
+                totalActionPages = Math.ceil(actionData.length / limit); // Update total pages based on limit
                 updateActionTable();
                 updateActionPagination();
-                isInitialActionLoad = false; // Đã tải xong lần đầu
             })
             .catch(error => console.error('Error fetching action data:', error));
     };
 
     const updateActionTable = () => {
-        // Filter action data based on search criteria and date range
         const filteredActionData = actionData.filter(row => {
             const rowDate = new Date(row.time);
             const rowDateString = `${rowDate.getFullYear()}-${String(rowDate.getMonth() + 1).padStart(2, '0')}-${String(rowDate.getDate()).padStart(2, '0')}`;
@@ -49,37 +43,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Update totalActionPages after filtering
-        totalActionPages = Math.ceil(filteredActionData.length / 8); // Assuming 8 records per page
+        totalActionPages = Math.ceil(filteredActionData.length / limit); // Update total pages based on limit
 
-        // Sort data only if sortActionField is set and it's not the initial load
-        let sortedActionData = filteredActionData;
-        if (sortActionField && !isInitialActionLoad) {
-            sortedActionData = filteredActionData.sort((a, b) => {
-                let aValue, bValue;
-                switch (sortActionField) {
-                    case 'time':
-                        aValue = new Date(a[sortActionField]);
-                        bValue = new Date(b[sortActionField]);
-                        break;
-                    case 'device_id':
-                        aValue = extractNumber(a[sortActionField]);
-                        bValue = extractNumber(b[sortActionField]);
-                        break;                     
-                    default:
-                        aValue = a[sortActionField].toString();
-                        bValue = b[sortActionField].toString();
-                }
+        // Sort data
+        let sortedActionData = filteredActionData.sort((a, b) => {
+            let aValue, bValue;
+            switch (sortActionField) {
+                case 'id':
+                    aValue = parseInt(a[sortActionField]);
+                    bValue = parseInt(b[sortActionField]);
+                    break;
+                case 'time':
+                    aValue = new Date(a[sortActionField]);
+                    bValue = new Date(b[sortActionField]);
+                    break;
+                case 'device_id':
+                    aValue = a[sortActionField].toString();
+                    bValue = b[sortActionField].toString();
+                    break;
+                default:
+                    aValue = a[sortActionField].toString();
+                    bValue = b[sortActionField].toString();
+            }
 
-                if (sortActionOrder === 'ASC') {
-                    return aValue > bValue ? 1 : (aValue < bValue ? -1 : 0);
-                } else {
-                    return aValue < bValue ? 1 : (aValue > bValue ? -1 : 0);
-                }
-            });
-        }
+            if (sortActionOrder === 'ASC') {
+                return aValue > bValue ? 1 : (aValue < bValue ? -1 : 0);
+            } else {
+                return aValue < bValue ? 1 : (aValue > bValue ? -1 : 0);
+            }
+        });
 
         // Paginate data
-        const paginatedActionData = sortedActionData.slice((currentActionPage - 1) * 8, currentActionPage * 8);
+        const paginatedActionData = sortedActionData.slice((currentActionPage - 1) * limit, currentActionPage * limit);
 
         // Update table
         actionTableBody.innerHTML = '';
@@ -88,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td>${row.id}</td>
                 <td>${row.device_id}</td>
                 <td>${row.status}</td>
                 <td>${formattedTime}</td>
@@ -96,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Format time for display
     const formatTime = (timeString) => {
         const date = new Date(timeString);
         const hours = String(date.getHours()).padStart(2, '0');
@@ -122,6 +117,12 @@ document.addEventListener('DOMContentLoaded', function () {
         pageBackActionButton.disabled = currentActionPage <= 1;
         pageNextActionButton.disabled = currentActionPage >= totalActionPages;
     };
+
+    limitInput.addEventListener('change', () => {
+        limit = parseInt(limitInput.value) || 8; // Update limit based on user input
+        currentActionPage = 1; // Reset to the first page on limit change
+        fetchActionData();
+    });
 
     searchActionButton.addEventListener('click', () => {
         searchActionField = document.getElementById('selectActionSearch').value;

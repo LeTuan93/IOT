@@ -120,10 +120,12 @@
             <div class="search-section">
                 <label for="selectSearch">SEARCH BY:</label>
                 <select id="selectSearch">
+                    <option value="id">ID</option>
                     <option value="device_id">Device ID</option>
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
+                    <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputSensor" placeholder="Enter search term...">
             </div>
@@ -144,6 +146,7 @@
             <div class="sort-section">
                 <label for="selectSensor">SORT BY:</label>
                 <select id="selectSensor">
+                    <option value="id">ID</option>
                     <option value="device_id">Device ID</option>
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
@@ -159,6 +162,7 @@
             <table id="sensor_table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Device ID</th>
                         <th>Humidity (%)</th>
                         <th>Temperature (ºC)</th>
@@ -173,9 +177,11 @@
         </div>
         
         <div class="pagination">
+            <div></div>
             <button id="page-back-sensor">Back</button>
             <select id="page-selector-sensor"></select>
             <button id="page-next-sensor">Next</button>
+            <input type="number" id="limit-input-sensor" min="1" value="8" />
         </div>
     </div>
     <div id="action-data" style ="display: none;">
@@ -187,8 +193,10 @@
             <div class="search-section">
                 <label for="selectActionSearch">SEARCH BY:</label>
                 <select id="selectActionSearch">
+                    <option value="id">ID</option>
                     <option value="device_id">Device ID</option>
                     <option value="status">Status</option>
+                    <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputAction" placeholder="Enter search term...">
             </div>
@@ -209,6 +217,7 @@
             <div class="sort-section">
                 <label for="selectActionSort">SORT BY:</label>
                 <select id="selectActionSort">
+                    <option value="id">ID</option>
                     <option value="device_id">Device ID</option>
                     <option value="status">Status</option>
                     <option value="time">Time</option>
@@ -222,6 +231,7 @@
             <table id="action_table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Device ID</th>
                         <th>Status</th>
                         <th>Time</th>
@@ -237,6 +247,7 @@
             <button id="page-back-action">Back</button>
             <select id="page-selector-action"></select>
             <button id="page-next-action">Next</button>
+            <input type="number" id="limit-input-action" min="1" value="8" />
         </div>
     </div>
     

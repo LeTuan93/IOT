@@ -7,95 +7,110 @@ document.addEventListener('DOMContentLoaded', function () {
     const pageSelector = document.getElementById('page-selector-sensor');
     const tableBody = document.querySelector('#sensor_table tbody');
     const sortFieldSelector = document.getElementById('selectSensor');
+    const limitInput = document.getElementById('limit-input-sensor'); // Limit input
 
     let data = [];
     let currentPage = 1;
     let totalPages = 1;
-    let sortField = 'device_id';
+    let sortField = 'id';
     let sortOrder = 'ASC';
-    let searchField = 'device_id';
+    let searchField = 'id';
     let searchTerm = '';
     let startDate = '';
     let endDate = '';
-    let isInitialLoad = true;
-
-    const extractNumber = (str) => {
-        const match = str.match(/\d+/); // Extract the first sequence of digits found in the string
-        return match ? parseInt(match[0], 10) : 0; // Convert the match to a number, or return 0 if no digits found
-    };
+    let limit = parseInt(limitInput.value) || 8; // Default limit
 
     const fetchData = () => {
         fetch('/api')
             .then(response => response.json())
             .then(fetchedData => {
                 data = fetchedData;
-                totalPages = Math.ceil(data.length / 8); // Assuming 8 records per page
+                totalPages = Math.ceil(data.length / limit); // Assuming 8 records per page
                 updateTable();
                 updatePagination();
-                isInitialLoad = false; // Đã tải xong lần đầu
             })
             .catch(error => console.error('Error fetching data:', error));
     };
-
     const updateTable = () => {
-        // Filter data based on search criteria and date range
         const filteredData = data.filter(row => {
             const rowDate = new Date(row.time);
             const rowDateString = `${rowDate.getFullYear()}-${String(rowDate.getMonth() + 1).padStart(2, '0')}-${String(rowDate.getDate()).padStart(2, '0')}`;
+            const rowTimeString = `${String(rowDate.getHours()).padStart(2, '0')}:${String(rowDate.getMinutes()).padStart(2, '0')}:${String(rowDate.getSeconds()).padStart(2, '0')}`;
+            
             const isWithinDateRange = (!startDate || rowDateString >= startDate) &&
                                       (!endDate || rowDateString <= endDate);
-            return row[searchField] && row[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase()) &&
-                   isWithinDateRange;
+        
+            // Function to match time components
+            const matchTime = (timeString, searchTerm) => {
+                const searchParts = searchTerm.split(':').map(part => part.trim());
+                const timeParts = timeString.split(':').map(part => part.trim());
+        
+                // Check if the search term is less specific (hours only, or hours and minutes)
+                const hoursMatch = searchParts[0] ? timeParts[0] === searchParts[0].padStart(2, '0') : true;
+                const minutesMatch = searchParts[1] ? timeParts[1] === (searchParts[1] || timeParts[1]) : true;
+                const secondsMatch = searchParts[2] ? timeParts[2] === (searchParts[2] || timeParts[2]) : true;
+        
+                return hoursMatch && minutesMatch && secondsMatch;
+            };
+        
+            // Check if the search field and term match any field, including 'id'
+            return (
+                (searchField === 'id' ? row.id.toString().includes(searchTerm) : true) && 
+                (searchField === 'time' ? matchTime(rowTimeString, searchTerm) : (row[searchField] && row[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase()))) &&
+                isWithinDateRange
+            );
         });
-
+        
+        
+    
         // Update totalPages after filtering
-        totalPages = Math.ceil(filteredData.length / 8); // Assuming 8 records per page
-
-        // Sort data only if sortField is set and it's not the initial load
-        let sortedData = filteredData;
-        console.log("sortField: " + sortField);
-        console.log("isInitialLoad: " + isInitialLoad);
-        if (sortField && !isInitialLoad) {
-            sortedData = filteredData.sort((a, b) => {
-                let aValue, bValue;
-                switch (sortField) {
-                    case 'time':
-                        aValue = new Date(a[sortField]);
-                        bValue = new Date(b[sortField]);
-                        break;
-                    case 'device_id':
-                        aValue = extractNumber(a[sortField]);
-                        bValue = extractNumber(b[sortField]);
-                        break;
-                    case 'humidity':
-                    case 'temperature':
-                    case 'light':
-                        aValue = parseFloat(a[sortField]);
-                        bValue = parseFloat(b[sortField]);
-                        break;
-                    default:
-                        aValue = a[sortField].toString();
-                        bValue = b[sortField].toString();
-                }
-
-                if (sortOrder === 'ASC') {
-                    return aValue > bValue ? 1 : (aValue < bValue ? -1 : 0);
-                } else {
-                    return aValue < bValue ? 1 : (aValue > bValue ? -1 : 0);
-                }
-            });
-        }
-
+        totalPages = Math.ceil(filteredData.length / limit); // Assuming 8 records per page
+    
+        // Sort data
+        let sortedData = filteredData.sort((a, b) => {
+            let aValue, bValue;
+            switch (sortField) {
+                case 'id':
+                    aValue = parseInt(a[sortField]);
+                    bValue = parseInt(b[sortField]);
+                    break;
+                case 'time':
+                    aValue = new Date(a[sortField]);
+                    bValue = new Date(b[sortField]);
+                    break;
+                case 'device_id':
+                    aValue = a[sortField].toString();
+                    bValue = b[sortField].toString();
+                    break;
+                case 'humidity':
+                case 'temperature':
+                case 'light':
+                    aValue = parseFloat(a[sortField]);
+                    bValue = parseFloat(b[sortField]);
+                    break;
+                default:
+                    aValue = a[sortField].toString();
+                    bValue = b[sortField].toString();
+            }
+    
+            if (sortOrder === 'ASC') {
+                return aValue > bValue ? 1 : (aValue < bValue ? -1 : 0);
+            } else {
+                return aValue < bValue ? 1 : (aValue > bValue ? -1 : 0);
+            }
+        });
+    
         // Paginate data
-        const paginatedData = sortedData.slice((currentPage - 1) * 8, currentPage * 8);
-
+        const paginatedData = sortedData.slice((currentPage - 1) * limit, currentPage * limit);
+    
         // Update table
         tableBody.innerHTML = '';
         paginatedData.forEach(row => {
             const formattedTime = formatTime(row.time);
-
+    
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td>${row.id}</td>
                 <td>${row.device_id}</td>
                 <td>${row.humidity}</td>
                 <td>${row.temperature}</td>
@@ -105,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
             tableBody.appendChild(tr);
         });
     };
+    
 
     // Format time for display
     const formatTime = (timeString) => {
@@ -132,6 +148,12 @@ document.addEventListener('DOMContentLoaded', function () {
         pageBackButton.disabled = currentPage <= 1;
         pageNextButton.disabled = currentPage >= totalPages;
     };
+
+    limitInput.addEventListener('change', () => {
+        limit = parseInt(limitInput.value) || 8; // Update limit based on user input
+        currentPage = 1; // Reset to the first page on limit change
+        fetchData();
+    });
 
     searchButton.addEventListener('click', () => {
         searchField = document.getElementById('selectSearch').value;
