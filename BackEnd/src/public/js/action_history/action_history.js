@@ -12,13 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let actionData = [];
     let currentActionPage = 1;
     let totalActionPages = 1;
-    let sortActionField = 'device_id';
+    let sortActionField = 'id';
     let sortActionOrder = 'ASC';
-    let searchActionField = 'device_id';
+    let searchActionField = 'all';
     let searchActionTerm = '';
-    let startActionDate = '';
-    let endActionDate = '';
-    let limit = parseInt(limitInput.value) || 8; // Default limit   
+    let limit = parseInt(limitInput.value) || 8; // Default limit
 
     const fetchActionData = () => {
         fetch('/api/action-history')
@@ -36,10 +34,33 @@ document.addEventListener('DOMContentLoaded', function () {
         const filteredActionData = actionData.filter(row => {
             const rowDate = new Date(row.time);
             const rowDateString = `${rowDate.getFullYear()}-${String(rowDate.getMonth() + 1).padStart(2, '0')}-${String(rowDate.getDate()).padStart(2, '0')}`;
-            const isWithinDateRange = (!startActionDate || rowDateString >= startActionDate) &&
-                                      (!endActionDate || rowDateString <= endActionDate);
-            return row[searchActionField] && row[searchActionField].toString().toLowerCase().includes(searchActionTerm.toLowerCase()) &&
-                   isWithinDateRange;
+            const rowFormattedDate = `${String(rowDate.getDate()).padStart(2, '0')}/${String(rowDate.getMonth() + 1).padStart(2, '0')}/${rowDate.getFullYear()}`;
+            const rowTimeString = `${String(rowDate.getHours()).padStart(2, '0')}:${String(rowDate.getMinutes()).padStart(2, '0')}:${String(rowDate.getSeconds()).padStart(2, '0')}`;
+            const rowFullDateTime = `${rowTimeString} - ${rowFormattedDate}`;
+
+            // Search function that checks for both date formats and time
+            const isMatch = (field, term) => {
+                if (field === 'all') {
+                    return Object.keys(row).some(key => {
+                        if (key === 'time') {
+                            return rowDateString.includes(term) || 
+                                   rowFormattedDate.includes(term) || 
+                                   rowTimeString.includes(term) || 
+                                   rowFullDateTime.includes(term);
+                        }
+                        return row[key] && row[key].toString().toLowerCase().includes(term.toLowerCase());
+                    });
+                } else if (field === 'time') {
+                    return rowDateString.includes(term) || 
+                           rowFormattedDate.includes(term) || 
+                           rowTimeString.includes(term) || 
+                           rowFullDateTime.includes(term);
+                } else {
+                    return row[field] && row[field].toString().toLowerCase().includes(term.toLowerCase());
+                }
+            };
+
+            return isMatch(searchActionField, searchActionTerm);
         });
 
         // Update totalActionPages after filtering
@@ -58,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     bValue = new Date(b[sortActionField]);
                     break;
                 case 'device_id':
+                case 'status':
                     aValue = a[sortActionField].toString();
                     bValue = b[sortActionField].toString();
                     break;
@@ -127,8 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
     searchActionButton.addEventListener('click', () => {
         searchActionField = document.getElementById('selectActionSearch').value;
         searchActionTerm = document.getElementById('inputAction').value;
-        startActionDate = document.getElementById('startTimeaction').value;
-        endActionDate = document.getElementById('endTimeaction').value;
         currentActionPage = 1; // Reset to the first page on new search
         fetchActionData();
     });

@@ -120,8 +120,8 @@
             <div class="search-section">
                 <label for="selectSearch">SEARCH BY:</label>
                 <select id="selectSearch">
+                    <option value="all">All</option>
                     <option value="id">ID</option>
-                    <option value="device_id">Device ID</option>
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
@@ -129,14 +129,6 @@
                 </select>
                 <input type="text" id="inputSensor" placeholder="Enter search term...">
             </div>
-
-            <div class="time-section">
-                <label for="startTimesensor">TIME RANGE:</label>
-                <input type="date" id="startTimesensor" placeholder="Start Time">
-                <span>→</span>
-                <input type="date" id="endTimesensor" placeholder="End Time">
-            </div>
-
             <div class="search-button">
                 <button id="btnSearchAll">SEARCH</button>
             </div>
@@ -147,7 +139,6 @@
                 <label for="selectSensor">SORT BY:</label>
                 <select id="selectSensor">
                     <option value="id">ID</option>
-                    <option value="device_id">Device ID</option>
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
@@ -163,7 +154,6 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Device ID</th>
                         <th>Humidity (%)</th>
                         <th>Temperature (ºC)</th>
                         <th>Light (lux)</th>
@@ -193,19 +183,13 @@
             <div class="search-section">
                 <label for="selectActionSearch">SEARCH BY:</label>
                 <select id="selectActionSearch">
+                    <option value="all">All</option>
                     <option value="id">ID</option>
-                    <option value="device_id">Device ID</option>
+                    <option value="device_id">Device</option>
                     <option value="status">Status</option>
                     <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputAction" placeholder="Enter search term...">
-            </div>
-    
-            <div class="time-section">
-                <label for="startTimeaction">TIME RANGE:</label>
-                <input type="date" id="startTimeaction" placeholder="Start Time">
-                <span>→</span>
-                <input type="date" id="endTimeaction" placeholder="End Time">
             </div>
     
             <div class="search-button">
@@ -218,7 +202,7 @@
                 <label for="selectActionSort">SORT BY:</label>
                 <select id="selectActionSort">
                     <option value="id">ID</option>
-                    <option value="device_id">Device ID</option>
+                    <option value="device_id">Device</option>
                     <option value="status">Status</option>
                     <option value="time">Time</option>
                 </select>
@@ -232,7 +216,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Device ID</th>
+                        <th>Device</th>
                         <th>Status</th>
                         <th>Time</th>
                     </tr>
@@ -271,19 +255,23 @@
                 <p><strong>Date of Birth:</strong> Math 9, 2003</p>
                 <p><strong>Student ID:</strong> B21DCAT205</p>
                 <p><strong>Class:</strong> D21CQAT01-B</p>
-                <h2>My project</h2>
+                <h2>My Project</h2>
                 <p><strong>Project:</strong> IOT</p>
-                <p><strong>GitHub:</strong> <a href="https://github.com/LeTuan93/iot" class="link">IOT PROJECT</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/LeTuan93/iot" class="link">Iot Project</a></p>
                 <p><strong>API Documentation:</strong> <a href="https://api.documentation.com" class="link">API Documentation</a></p>
                 <p><strong>Report:</strong> <a href="https://example.com/attachment" class="link">Attachment</a></p>
             </section>
         </main>
     </div>
 
-    <script src="/js/dashboard/feature.js"></script>
+    <script type="module" src="/js/dashboard/feature.js"></script>
+
     <script src="/js/sidebar.js"></script>
     <script src="/js/dashboard/chart.js"></script>
     <script src="/js/sensor_data/sensor_data.js"></script>
     <script src="/js/action_history/action_history.js"></script>
+    <!-- <script type="module" src="../services/mqttClient.js"></script> -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 </body>
 </html>

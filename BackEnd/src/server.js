@@ -15,14 +15,10 @@ configViewEngine(app);
 //khai bao router
 app.use('/', webRoutes)
 
+// Cấu hình máy chủ để phục vụ tệp tĩnh từ thư mục 'services'
+app.use('/services', express.static(path.join(__dirname, 'services')));
+
 
 app.listen(port, hostname, () => {
   console.log(`Example app listening at http://localhost:${port}`);
-
-  // Kiểm tra kết nối MQTT
-  if (mqttClient.connected) {
-      console.log('MQTT client is connected');
-  } else {
-      console.log('MQTT client is not connected');
-  }
 });

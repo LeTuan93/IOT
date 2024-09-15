@@ -58,6 +58,7 @@ h1 {
     border-radius: 4px;
     border: 1px solid #ccc;
     margin-right: 10px;
+    height: 36px;
 }
 
 .search-controls input[type="date"] {
@@ -75,7 +76,6 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 90px;
-    margin-top: 8px; /* Added margin-top for spacing */
 }
 
 .search-button button:hover, 

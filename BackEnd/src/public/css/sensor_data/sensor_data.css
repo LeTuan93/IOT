@@ -103,7 +103,7 @@ button:hover {
 
 .search-button {
     /* margin-left: -200px; Adjusts the search button closer to the left */
-    margin-left: 45px;
+    margin-left: -360px;
     width: 100px; 
 }
 

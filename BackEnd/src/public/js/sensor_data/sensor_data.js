@@ -14,10 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let totalPages = 1;
     let sortField = 'id';
     let sortOrder = 'ASC';
-    let searchField = 'id';
+    let searchField = 'all';
     let searchTerm = '';
-    let startDate = '';
-    let endDate = '';
     let limit = parseInt(limitInput.value) || 8; // Default limit
 
     const fetchData = () => {
@@ -31,42 +29,50 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching data:', error));
     };
+
     const updateTable = () => {
         const filteredData = data.filter(row => {
             const rowDate = new Date(row.time);
-            const rowDateString = `${rowDate.getFullYear()}-${String(rowDate.getMonth() + 1).padStart(2, '0')}-${String(rowDate.getDate()).padStart(2, '0')}`;
+            const rowDateString = `${String(rowDate.getDate()).padStart(2, '0')}/${String(rowDate.getMonth() + 1).padStart(2, '0')}/${rowDate.getFullYear()}`;
             const rowTimeString = `${String(rowDate.getHours()).padStart(2, '0')}:${String(rowDate.getMinutes()).padStart(2, '0')}:${String(rowDate.getSeconds()).padStart(2, '0')}`;
-            
-            const isWithinDateRange = (!startDate || rowDateString >= startDate) &&
-                                      (!endDate || rowDateString <= endDate);
-        
-            // Function to match time components
+            const rowFullDateTime = `${rowTimeString} - ${rowDateString}`;
+
+            const matchDate = (dateString, searchTerm) => dateString.includes(searchTerm);
             const matchTime = (timeString, searchTerm) => {
                 const searchParts = searchTerm.split(':').map(part => part.trim());
                 const timeParts = timeString.split(':').map(part => part.trim());
-        
-                // Check if the search term is less specific (hours only, or hours and minutes)
+                
                 const hoursMatch = searchParts[0] ? timeParts[0] === searchParts[0].padStart(2, '0') : true;
                 const minutesMatch = searchParts[1] ? timeParts[1] === (searchParts[1] || timeParts[1]) : true;
                 const secondsMatch = searchParts[2] ? timeParts[2] === (searchParts[2] || timeParts[2]) : true;
-        
                 return hoursMatch && minutesMatch && secondsMatch;
             };
-        
-            // Check if the search field and term match any field, including 'id'
-            return (
-                (searchField === 'id' ? row.id.toString().includes(searchTerm) : true) && 
-                (searchField === 'time' ? matchTime(rowTimeString, searchTerm) : (row[searchField] && row[searchField].toString().toLowerCase().includes(searchTerm.toLowerCase()))) &&
-                isWithinDateRange
-            );
+
+            const isMatch = (field, term) => {
+                if (field === 'time') {
+                    return matchDate(rowDateString, term) || matchTime(rowTimeString, term) || matchDate(rowFullDateTime, term);
+                } else {
+                    return row[field] && row[field].toString().toLowerCase().includes(term.toLowerCase());
+                }
+            };
+
+            if (searchField === 'all') {
+                return (
+                    (row.id.toString().includes(searchTerm) || 
+                    row.humidity.toString().includes(searchTerm) || 
+                    row.temperature.toString().includes(searchTerm) || 
+                    row.light.toString().includes(searchTerm) || 
+                    matchDate(rowDateString, searchTerm) || 
+                    matchTime(rowTimeString, searchTerm) ||
+                    matchDate(rowFullDateTime, searchTerm)) 
+                );
+            } else {
+                return isMatch(searchField, searchTerm);
+            }
         });
-        
-        
-    
-        // Update totalPages after filtering
-        totalPages = Math.ceil(filteredData.length / limit); // Assuming 8 records per page
-    
-        // Sort data
+
+        totalPages = Math.ceil(filteredData.length / limit); // Cập nhật lại số trang sau khi lọc dữ liệu
+
         let sortedData = filteredData.sort((a, b) => {
             let aValue, bValue;
             switch (sortField) {
@@ -78,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     aValue = new Date(a[sortField]);
                     bValue = new Date(b[sortField]);
                     break;
-                case 'device_id':
-                    aValue = a[sortField].toString();
-                    bValue = b[sortField].toString();
-                    break;
                 case 'humidity':
                 case 'temperature':
                 case 'light':
@@ -92,26 +94,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     aValue = a[sortField].toString();
                     bValue = b[sortField].toString();
             }
-    
+
             if (sortOrder === 'ASC') {
                 return aValue > bValue ? 1 : (aValue < bValue ? -1 : 0);
             } else {
                 return aValue < bValue ? 1 : (aValue > bValue ? -1 : 0);
             }
         });
-    
-        // Paginate data
+
         const paginatedData = sortedData.slice((currentPage - 1) * limit, currentPage * limit);
-    
-        // Update table
+
         tableBody.innerHTML = '';
         paginatedData.forEach(row => {
             const formattedTime = formatTime(row.time);
-    
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${row.id}</td>
-                <td>${row.device_id}</td>
                 <td>${row.humidity}</td>
                 <td>${row.temperature}</td>
                 <td>${row.light}</td>
@@ -120,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
             tableBody.appendChild(tr);
         });
     };
-    
 
     // Format time for display
     const formatTime = (timeString) => {
@@ -158,8 +156,6 @@ document.addEventListener('DOMContentLoaded', function () {
     searchButton.addEventListener('click', () => {
         searchField = document.getElementById('selectSearch').value;
         searchTerm = document.getElementById('inputSensor').value;
-        startDate = document.getElementById('startTimesensor').value;
-        endDate = document.getElementById('endTimesensor').value;
         currentPage = 1; // Reset to the first page on new search
         fetchData();
     });

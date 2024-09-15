@@ -1,3 +1,5 @@
+const { controlDevice } = require('../../../services/mqttClient.js');  // Đảm bảo đường dẫn chính xác
+
 // Helper function to save the state to local storage
 function saveStateToLocalStorage(device, state) {
     localStorage.setItem(device, state);
@@ -12,33 +14,39 @@ function loadStateFromLocalStorage(device) {
 function playLed() {
     document.getElementById('led').src = 'images/ledOn.png';
     saveStateToLocalStorage('led', 'on');
+    controlDevice('Đèn', 'ON');  // Topic đúng cho LED
 }
 
 function stopLed() {
     document.getElementById('led').src = 'images/ledOff.png';
     saveStateToLocalStorage('led', 'off');
+    controlDevice('Đèn', 'OFF');  // Topic đúng cho LED
 }
 
 // Fan
 function playFan() {
     document.getElementById('fan').src = 'images/fanOn.gif';
     saveStateToLocalStorage('fan', 'on');
+    controlDevice('Quạt', 'ON');  // Topic đúng cho quạt
 }
 
 function stopFan() {
     document.getElementById('fan').src = 'images/fanOff.png';
     saveStateToLocalStorage('fan', 'off');
+    controlDevice('Quạt', 'OFF');  // Topic đúng cho quạt
 }
 
 // Air Conditioner
 function playAC() {
     document.getElementById('ac').src = 'images/acOn.gif';
     saveStateToLocalStorage('ac', 'on');
+    controlDevice('Điều hòa', 'ON');  // Topic đúng cho điều hòa
 }
 
 function stopAC() {
     document.getElementById('ac').src = 'images/acOff.png';
     saveStateToLocalStorage('ac', 'off');
+    controlDevice('Điều hòa', 'OFF');  // Topic đúng cho điều hòa
 }
 
 // Function to restore the state of the devices on page load
@@ -71,9 +79,7 @@ function restoreDeviceState() {
 // Call the restore function when the page loads
 window.onload = restoreDeviceState;
 
-
-
-// Hàm để cập nhật màu sắc dựa trên giá trị
+// Function to update colors based on values
 function updateColor(elementId, value, minValue, maxValue, baseHue) {
     const element = document.getElementById(elementId);
     
@@ -109,11 +115,8 @@ async function fetchDataAndUpdateUI() {
     }
 }
 
-
-// Gọi hàm fetchDataAndUpdateUI mỗi 5 giây để cập nhật giao diện
+// Call fetchDataAndUpdateUI every 5 seconds to update the UI
 setInterval(fetchDataAndUpdateUI, 5000);
 
-// Gọi lần đầu khi trang được tải
+// Call it initially when the page loads
 window.addEventListener('load', fetchDataAndUpdateUI);
-
-
