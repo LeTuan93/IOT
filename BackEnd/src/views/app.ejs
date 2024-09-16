@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/dashboard/dashboard.css">
     <link rel="stylesheet" href="/css/pagination.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
      <!-- Link to the icon -->
      <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
@@ -89,22 +89,22 @@
                 <div class="device light">
                     <img id="led" src="images/ledOff.png" alt="Led">
                     <div class="button-container">
-                        <button class="button-class" onclick="playLed()">Turn On</button>
-                        <button class="button-class" onclick="stopLed()">Turn Off</button>
+                        <button id="led-on" class="button-class" onclick="toggleLed('on')">Turn On</button>
+                        <button id="led-off" class="button-class" onclick="toggleLed('off')">Turn Off</button>
                     </div>
                 </div>
                 <div class="device fan">
                     <img id="fan" src="images/fanOff.png" alt="Fan">
                     <div class="button-container">
-                        <button class="button-class" onclick="playFan()">Turn On</button>
-                        <button class="button-class" onclick="stopFan()">Turn Off</button>
+                        <button id="fan-on" class="button-class" onclick="toggleFan('on')">Turn On</button>
+                        <button id="fan-off" class="button-class" onclick="toggleFan('off')">Turn Off</button>
                     </div>
                 </div>
                 <div class="device air-conditioner">
                     <img id="ac" src="images/acOff.png" alt="Air-conditioner">
                     <div class="button-container">
-                        <button class="button-class" onclick="playAC()">Turn On</button>
-                        <button class="button-class" onclick="stopAC()">Turn Off</button>
+                        <button id="ac-on" class="button-class" onclick="toggleAC('on')">Turn On</button>
+                        <button id="ac-off" class="button-class" onclick="toggleAC('off')">Turn Off</button>
                     </div>
                 </div>
             </div>
@@ -264,14 +264,10 @@
         </main>
     </div>
 
-    <script type="module" src="/js/dashboard/feature.js"></script>
-
+    <script src="/js/dashboard/devices.js"></script>
     <script src="/js/sidebar.js"></script>
     <script src="/js/dashboard/chart.js"></script>
     <script src="/js/sensor_data/sensor_data.js"></script>
     <script src="/js/action_history/action_history.js"></script>
-    <!-- <script type="module" src="../services/mqttClient.js"></script> -->
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
 </body>
 </html>
