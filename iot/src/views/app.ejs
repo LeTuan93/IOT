@@ -1,0 +1,273 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOT</title>
+    <link rel="stylesheet" href="/css//sidebar.css">
+    <link rel="stylesheet" href="/css/action_history/action_history.css">
+    <link rel="stylesheet" href="/css/profile/profile.css">
+    <link rel="stylesheet" href="/css/sensor_data/sensor_data.css">
+    <link rel="stylesheet" href="/css/dashboard/dashboard.css">
+    <link rel="stylesheet" href="/css/pagination.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+     <!-- Link to the icon -->
+     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div id="sidebar" class="sidebar collapsed">
+        <button id="toggleBtn" class="toggle-btn" onclick="toggleSidebar()">&#8594</button>
+        <ul class="sidebar-menu ">
+            <li class="sidebar-item">
+                <img src="images/dashboard.png" alt="Dashboard Icon" class="sidebar-icon">
+                <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+            </li>
+            <li class="sidebar-item">
+                <img src="images/sensor.png" alt="Sensor Data Icon" class="sidebar-icon">
+                <a href="#" onclick="showSection('sensor-data')">Sensor Data</a>
+            </li>
+            <li class="sidebar-item">
+                <img src="images/action.png" alt="Action Icon" class="sidebar-icon">
+                <a href="#" onclick="showSection('action-data')">Action History</a>
+            </li>
+            <li class="sidebar-item">
+                <img src="images/profile.png" alt="Profile Icon" class="sidebar-icon">
+                <a href="#" onclick="showSection('profile-page')">Profile</a>
+            </li>
+        </ul>
+    </div>
+    
+    <div id="dashboard">
+        <div class="container" >
+            <div class="card red" id="tp">
+                <div class="card-header">
+                    <h4 id="nhietdo-h4">TEMPERATURE</h4>
+                    <img src="images/temperature.gif" alt="Temperature" class="Temperature-icon">
+                </div>
+                <div class="card-body">
+                    <h2 id="nhietdo">Loading ...<span>ºC</span></h2>
+                </div>
+            </div>
+        
+            <div class="card blue" id="hm">
+                <div class="card-header">
+                    <h4 id="doam-h4">HUMIDITY</h4>
+                    <img src="images/humidity.gif" alt="Humidity" class="Humidity-icon">
+                </div>
+                <div class="card-body">
+                    <h2 id="doam">Loading ...<span>%</span></h2>
+                </div>
+            </div>
+        
+            <div class="card yellow" id="lt">
+                <div class="card-header">
+                    <h4 id="anhsang-h4">LIGHT</h4>
+                    <img src="images/sun.gif" alt="Light" class="Light-icon">
+                </div>
+                <div class="card-body">
+                    <h2 id="anhsang">Loading ...<span>lux</span></h2>
+                </div>
+            </div>
+        
+            <!-- <div class="card yellow">
+                <div class="card-header">
+                    <h4>Weight — User</h4>
+                    <img src="images/settings-icon.png" alt="Settings" class="settings-icon">
+                </div>
+                <div class="card-body">
+                    <h2>79.76 <span>kg</span></h2>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="container-2">
+            <div class="item-2">
+                <canvas id="chartCanvas"></canvas>
+            </div>
+
+            <div class="item-3">
+                <div class="device light">
+                    <img id="led" src="images/ledOff.png" alt="Led">
+                    <div class="button-container">
+                        <button id="led-on" class="button-class" onclick="toggleLed('on')">Turn On</button>
+                        <button id="led-off" class="button-class" onclick="toggleLed('off')">Turn Off</button>
+                    </div>
+                </div>
+                <div class="device fan">
+                    <img id="fan" src="images/fanOff.png" alt="Fan">
+                    <div class="button-container">
+                        <button id="fan-on" class="button-class" onclick="toggleFan('on')">Turn On</button>
+                        <button id="fan-off" class="button-class" onclick="toggleFan('off')">Turn Off</button>
+                    </div>
+                </div>
+                <div class="device air-conditioner">
+                    <img id="ac" src="images/acOff.png" alt="Air-conditioner">
+                    <div class="button-container">
+                        <button id="ac-on" class="button-class" onclick="toggleAC('on')">Turn On</button>
+                        <button id="ac-off" class="button-class" onclick="toggleAC('off')">Turn Off</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sensor-data" style ="display: none;">
+        <div class="sensor-header">
+            <h1>SENSOR DATA</h1>
+        </div>
+        
+        <div class="search-controls">
+            <div class="search-section">
+                <label for="selectSearch">SEARCH BY:</label>
+                <select id="selectSearch">
+                    <option value="all">All</option>
+                    <option value="id">ID</option>
+                    <option value="humidity">Humidity</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="light">Light</option>
+                    <option value="time">Time</option>
+                </select>
+                <input type="text" id="inputSensor" placeholder="Enter search term...">
+            </div>
+            <div class="search-button">
+                <button id="btnSearchAll">SEARCH</button>
+            </div>
+        </div>
+
+        <div class="sort-controls">
+            <div class="sort-section">
+                <label for="selectSensor">SORT BY:</label>
+                <select id="selectSensor">
+                    <option value="id">ID</option>
+                    <option value="humidity">Humidity</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="light">Light</option>
+                    <option value="time">Time</option>
+                </select>
+                <button id="SU">ASC</button>
+                <button id="SD">DESC</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="sensor_table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Humidity (%)</th>
+                        <th>Temperature (ºC)</th>
+                        <th>Light (lux)</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sensor data rows will be dynamically generated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination">
+            <div></div>
+            <button id="page-back-sensor">Back</button>
+            <select id="page-selector-sensor"></select>
+            <button id="page-next-sensor">Next</button>
+            <input type="number" id="limit-input-sensor" min="1" value="8" />
+        </div>
+    </div>
+    <div id="action-data" style ="display: none;">
+        <div class="action-header">
+            <h1>ACTION HISTORY</h1>
+        </div>
+        
+        <div class="search-controls">
+            <div class="search-section">
+                <label for="selectActionSearch">SEARCH BY:</label>
+                <select id="selectActionSearch">
+                    <option value="all">All</option>
+                    <option value="id">ID</option>
+                    <option value="device_id">Device</option>
+                    <option value="status">Status</option>
+                    <option value="time">Time</option>
+                </select>
+                <input type="text" id="inputAction" placeholder="Enter search term...">
+            </div>
+    
+            <div class="search-button">
+                <button id="btnSearchAction">SEARCH</button>
+            </div>
+        </div>
+    
+        <div class="sort-controls">
+            <div class="sort-section">
+                <label for="selectActionSort">SORT BY:</label>
+                <select id="selectActionSort">
+                    <option value="id">ID</option>
+                    <option value="device_id">Device</option>
+                    <option value="status">Status</option>
+                    <option value="time">Time</option>
+                </select>
+                <button id="actionSU">ASC</button>
+                <button id="actionSD">DESC</button>
+            </div>
+        </div>
+    
+        <div class="table-container">
+            <table id="action_table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Device</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Action history data rows will be dynamically generated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination">
+            <button id="page-back-action">Back</button>
+            <select id="page-selector-action"></select>
+            <button id="page-next-action">Next</button>
+            <input type="number" id="limit-input-action" min="1" value="8" />
+        </div>
+    </div>
+    
+    <div id='profile-page' class="profile-container" style ="display: none;">
+        <header class="profile-header">
+            <div class="profile-banner">
+                <img src="/images/proptit.png" alt="Profile Banner">
+            </div>
+            <div class="profile-info">
+                <div class="profile-picture">
+                    <img src="/images/me.jpg" alt="Profile Picture">
+                </div>
+                <h1 class="profile-name">Le Anh Tuan</h1>
+                <p class="profile-bio">Malware analysis | Tech Enthusiast | Lifelong Learner</p>
+            </div>
+        </header>
+        <main class="profile-main">
+            <section class="profile-details">
+                <h2>About Me</h2>
+                <p><strong>Full Name:</strong> Le Anh Tuan</p>
+                <p><strong>Date of Birth:</strong> Math 9, 2003</p>
+                <p><strong>Student ID:</strong> B21DCAT205</p>
+                <p><strong>Class:</strong> D21CQAT01-B</p>
+                <h2>My Project</h2>
+                <p><strong>Project:</strong> IOT</p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/LeTuan93/iot" class="link">Iot Project</a></p>
+                <p><strong>API Documentation:</strong> <a href="http://localhost:8081/api-docs/" class="link">API Documentation</a></p>
+                <p><strong>Report:</strong> <a href="https://docs.google.com/document/d/1P1VRkH5jDFaDqJw7RKiB41X8AAVQQ-Go/edit" class="link">Report</a></p>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/dashboard/devices.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/dashboard/chart.js"></script>
+    <script src="/js/sensor_data/sensor_data.js"></script>
+    <script src="/js/action_history/action_history.js"></script>
+</body>
+</html>

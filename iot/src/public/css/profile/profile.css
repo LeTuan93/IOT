@@ -1,0 +1,97 @@
+/* styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.profile-container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 60px; /* Tạo khoảng trống để ảnh đại diện không bị che khuất */
+}
+
+.profile-header {
+    position: relative;
+    color: #fff;
+}
+
+.profile-banner img {
+    width: 100%;
+    height: 255px;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-info {
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-picture {
+    display: inline-block;
+    position: absolute;
+    bottom: 150px; /* Đặt ảnh đại diện đè lên banner */
+    overflow: hidden; 
+    z-index: 10; /* Đảm bảo ảnh đại diện ở trên cùng */
+    left: 43.5%;
+}
+
+.profile-picture img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    border: 5px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-name {
+    font-size: 2em;
+    margin: 10px 0;
+    margin-top: 80px; /* Tạo khoảng cách phía trên tên để tránh bị đè */
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-bio {
+    font-size: 1.2em;
+    color: #ddd;
+    margin-bottom: 40px;
+}
+
+.profile-links {
+    margin-top: 20px;
+}
+
+.profile-links .link {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 45px;
+    text-decoration: none;
+    margin: 0px 10px;
+    display: inline-block;
+}
+
+.profile-links .link:hover {
+    background-color: #0056b3;
+}
+
+.profile-main {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: -50px;
+}
+
+.profile-main h2 {
+    font-size: 1.5em;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
