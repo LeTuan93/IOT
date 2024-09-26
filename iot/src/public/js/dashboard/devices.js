@@ -1,15 +1,19 @@
 const options = {
-    host: '192.168.1.211',
+    host: '192.168.198.41',
     port: 9001,
     username: 'B21DCAT205',
-    password: '123'
-};
+    password: '123',
+}
 
 const client = mqtt.connect(options);
 
 // Xử lý sự kiện kết nối
 client.on('connect', () => {
     console.log('Connected to MQTT broker');
+    // Subscribe to relevant topics to receive updates
+    client.subscribe('home/devices/den');
+    client.subscribe('home/devices/quat');
+    client.subscribe('home/devices/dieuhoa');
 });
 
 // Function to publish MQTT messages
@@ -23,8 +27,6 @@ function sendMQTTMessage(topic, message) {
     });
 }
 
-
-// Helper function to save the state to local storage
 function saveStateToLocalStorage(device, state) {
     localStorage.setItem(device, state);
 }
@@ -36,65 +38,17 @@ function loadStateFromLocalStorage(device) {
 
 // Function to handle LED button clicks
 function toggleLed(state) {
-    const ledButtonOn = document.querySelector('#led-on');
-    const ledButtonOff = document.querySelector('#led-off');
-    const ledImg = document.getElementById('led');
-
-    if (state === 'on') {
-        ledImg.src = 'images/ledOn.png';
-        ledButtonOn.classList.add('active');
-        ledButtonOff.classList.remove('active');
-        saveStateToLocalStorage('led', 'on');
-        sendMQTTMessage('home/devices/den', 'ON');
-    } else {
-        ledImg.src = 'images/ledOff.png';
-        ledButtonOff.classList.add('active');
-        ledButtonOn.classList.remove('active');
-        saveStateToLocalStorage('led', 'off');
-        sendMQTTMessage('home/devices/den', 'OFF');
-    }
+    sendMQTTMessage('home/devices/den', state === 'on' ? 'ON' : 'OFF');
 }
 
 // Function to handle Fan button clicks
 function toggleFan(state) {
-    const fanButtonOn = document.querySelector('#fan-on');
-    const fanButtonOff = document.querySelector('#fan-off');
-    const fanImg = document.getElementById('fan');
-
-    if (state === 'on') {
-        fanImg.src = 'images/fanOn.gif';
-        fanButtonOn.classList.add('active');
-        fanButtonOff.classList.remove('active');
-        saveStateToLocalStorage('fan', 'on');
-        sendMQTTMessage('home/devices/quat', 'ON');
-    } else {
-        fanImg.src = 'images/fanOff.png';
-        fanButtonOff.classList.add('active');
-        fanButtonOn.classList.remove('active');
-        saveStateToLocalStorage('fan', 'off');
-        sendMQTTMessage('home/devices/quat', 'OFF');
-    }
+    sendMQTTMessage('home/devices/quat', state === 'on' ? 'ON' : 'OFF');
 }
 
 // Function to handle Air Conditioner button clicks
 function toggleAC(state) {
-    const acButtonOn = document.querySelector('#ac-on');
-    const acButtonOff = document.querySelector('#ac-off');
-    const acImg = document.getElementById('ac');
-
-    if (state === 'on') {
-        acImg.src = 'images/acOn.gif';
-        acButtonOn.classList.add('active');
-        acButtonOff.classList.remove('active');
-        saveStateToLocalStorage('ac', 'on');
-        sendMQTTMessage('home/devices/dieuhoa', 'ON');
-    } else {
-        acImg.src = 'images/acOff.png';
-        acButtonOff.classList.add('active');
-        acButtonOn.classList.remove('active');
-        saveStateToLocalStorage('ac', 'off');
-        sendMQTTMessage('home/devices/dieuhoa', 'OFF');
-    }
+    sendMQTTMessage('home/devices/dieuhoa', state === 'on' ? 'ON' : 'OFF');
 }
 
 // Update functions for the state restoration
@@ -108,7 +62,6 @@ function restoreDeviceState() {
     const acState = loadStateFromLocalStorage('ac');
     toggleAC(acState === 'on' ? 'on' : 'off');
 }
-
 
 // Call the restore function when the page loads
 window.onload = restoreDeviceState;
@@ -140,12 +93,13 @@ async function fetchDataAndUpdateUI() {
         document.getElementById('nhietdo').textContent = `${latestData.temperature}ºC`;
         document.getElementById('doam').textContent = `${latestData.humidity}%`;
         document.getElementById('anhsang').textContent = `${latestData.light} lux`;
+        document.getElementById('Dash').textContent = `${latestData.Dash} µg/m³`;
 
         // Base hues: Red for temperature, Blue for humidity, Yellow for light
         updateColor('tp', latestData.temperature, 0, 45, 0); // Red
         updateColor('hm', latestData.humidity, 30, 70, 240); // Blue
         updateColor('lt', latestData.light, 0, 1500, 60);    // Yellow
-
+        updateColor('Dash', latestData.Dash, 0, 100, 120); // Green
     } catch (error) {
         console.error('Error fetching data:', error);
     }

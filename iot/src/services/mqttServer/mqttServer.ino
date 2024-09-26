@@ -13,11 +13,15 @@ int ldrValue = 0;     // Biến để lưu giá trị đọc từ LDR
 #define LIGHT1_PIN 14   // GPIO14 tương ứng với D5 (Đèn)
 #define LIGHT2_PIN 12   // GPIO12 tương ứng với D6 (Quạt)
 #define LIGHT3_PIN 13   // GPIO13 tương ứng với D7 (Điều hòa)
+#define BLINK_LED_PIN 16 // GPIO16 tương ứng với D0 (Đèn nhấp nháy khi ánh sáng > 500)
+
+
+bool ledState = LOW;  // Trạng thái hiện tại của đèn nhấp nháy
 
 // Wi-Fi and MQTT information
-const char* ssid = "hellocacban"; 
-const char* password = "hicacban";
-const char* mqtt_server = "192.168.1.211";  // Change this to your MQTT broker IP
+const char* ssid = "Saddd"; 
+const char* password = "Dangcap.";
+const char* mqtt_server = "192.168.198.41";  // Change this to your MQTT broker IP
 const char* mqtt_username = "B21DCAT205";
 const char* mqtt_password = "123";
 
@@ -58,34 +62,34 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strcmp(topic, "home/devices/den") == 0) {
     if (message == "ON") {
       digitalWrite(LIGHT1_PIN, HIGH);
-      client.publish("home/devices/den/status", "ON");
       Serial.println("LED turned ON");
+      client.publish("home/devices/den/status", "ON");
     } else if (message == "OFF") {
       digitalWrite(LIGHT1_PIN, LOW);
-      client.publish("home/devices/den/status", "OFF");
       Serial.println("LED turned OFF");
+      client.publish("home/devices/den/status", "OFF");
     }
   }
   if (strcmp(topic, "home/devices/quat") == 0) {
     if (message == "ON") {
       digitalWrite(LIGHT2_PIN, HIGH);
-      client.publish("home/devices/quat/status", "ON");
       Serial.println("Fan turned ON");
+      client.publish("home/devices/quat/status", "ON");
     } else if (message == "OFF") {
       digitalWrite(LIGHT2_PIN, LOW);
-      client.publish("home/devices/quat/status", "OFF");
       Serial.println("Fan turned OFF");
+      client.publish("home/devices/quat/status", "OFF");
     }
   }
   if (strcmp(topic, "home/devices/dieuhoa") == 0) {
     if (message == "ON") {
       digitalWrite(LIGHT3_PIN, HIGH);
-      client.publish("home/devices/dieuhoa/status", "ON");
       Serial.println("Air Conditioner turned ON");
+      client.publish("home/devices/dieuhoa/status", "ON");
     } else if (message == "OFF") {
       digitalWrite(LIGHT3_PIN, LOW);
-      client.publish("home/devices/dieuhoa/status", "OFF");
       Serial.println("Air Conditioner turned OFF");
+      client.publish("home/devices/dieuhoa/status", "OFF");
     }
   }
 }
@@ -123,6 +127,7 @@ void setup() {
   pinMode(LIGHT1_PIN, OUTPUT);  // Đèn
   pinMode(LIGHT2_PIN, OUTPUT);  // Quạt
   pinMode(LIGHT3_PIN, OUTPUT);  // Điều hòa
+  pinMode(BLINK_LED_PIN, OUTPUT); // Đèn nhấp nháy khi ánh sáng > 500
 }
 
 void loop() {
@@ -139,6 +144,16 @@ void loop() {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
+
+  // If light intensity is greater than 500, blink the LED
+  if (ldrValue > 500) {
+    ledState = !ledState;  // Toggle LED state
+    digitalWrite(BLINK_LED_PIN, ledState);
+    delay(500); // Blink interval of 500ms
+  } else {
+    digitalWrite(BLINK_LED_PIN, LOW);  // Turn off the LED if light is less than 500
+  }
+
   // Prepare JSON payload
   String payload = "{\"light\":";
   payload += String(ldrValue);
@@ -146,6 +161,8 @@ void loop() {
   payload += String(humidity);
   payload += ",\"temperature\":";
   payload += String(temperature);
+  payload += ",\"Dash\":";
+  payload += String(random(10, 60));
   payload += "}";
 
   // Publish the sensor data to MQTT topic

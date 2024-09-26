@@ -4,6 +4,8 @@ let temperatureData = [];
 let humidityData = [];
 let lightData = [];
 
+let dashData = [];
+
 // Hàm này sẽ chuyển đổi dữ liệu từ API thành định dạng phù hợp với Chart.js
 function transformData(apiData) {
     // Giới hạn số lượng điểm dữ liệu hiển thị
@@ -21,12 +23,22 @@ function transformData(apiData) {
     humidityData.push(newData.humidity);
     lightData.push(newData.light);
 
+    dashData.push(newData.Dash);
+
+    // // Kiểm tra nếu giá trị light vượt quá 700
+    // if (newData.light > 500) {
+    //     alert(`Cảnh báo: Mức ánh sáng cao (${newData.light}) tại ${timeLabel} ${dateLabel}`);
+    // }
+
     // Giới hạn số lượng điểm dữ liệu hiển thị
     if (labels.length > 10) {
         labels.shift();
         temperatureData.shift();
         humidityData.shift();
         lightData.shift();
+
+        dashData.shift(); // Xóa điểm dữ liệu cũ nhất
+        
     }
 
     // Trả về dữ liệu đã chuyển đổi phù hợp với định dạng Chart.js
@@ -56,6 +68,14 @@ function transformData(apiData) {
                 backgroundColor: 'rgba(255, 206, 86, 0.2)',
                 fill: false,
                 tension: 0.4,
+            },
+            {
+                label: 'Dash (µg/m³)',
+                data: dashData,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: false,
+                tension: 0.4,
             }
         ]
     };
@@ -67,25 +87,25 @@ function createChart(ctx, chartData) {
         type: 'line', // Loại biểu đồ
         data: chartData, // Sử dụng dữ liệu từ API
         options: {
-            responsive: true,
-            plugins: {
-                tooltip: {
+            responsive: true, // Biểu đồ tự động điều chỉnh kích thước
+            plugins: { // Các plugin mở rộng
+                tooltip: { // Hiển thị tooltip khi di chuột qua biểu đồ
                     enabled: true,
-                    mode: 'nearest',
-                    intersect: false,
+                    mode: 'nearest', // Hiển thị tooltip cho dữ liệu gần nhất
+                    intersect: false, // Hiển thị tooltip cho mỗi dữ liệu
                 },
                 legend: {
-                    display: true,
-                    position: 'top',
+                    display: true, // Hiển thị chú thích
+                    position: 'top', // Đặt chú thích ở trên cùng
                 }
             },
-            scales: {
+            scales: { // Cấu hình trục x và trục y
                 x: {
-                    title: {
+                    title: { // Tiêu đề trục x
                         display: true,
                         text: 'Time',
                     },
-                    ticks: {
+                    ticks: { // Cấu hình nhãn trục x
                         autoSkip: false, // Đảm bảo không tự động bỏ qua nhãn
                         maxTicksLimit: 10, // Chỉ hiển thị tối đa 10 nhãn
                         callback: function(value, index, values) {
@@ -124,7 +144,7 @@ function fetchDataAndUpdateChart() {
                 updateChartData(chart, newChartData);
             } else {
                 // Nếu chưa có biểu đồ, khởi tạo mới
-                const ctx = document.getElementById('chartCanvas').getContext('2d');
+                const ctx = document.getElementById('chartCanvas').getContext('2d'); // Lấy context của canvas
                 chart = createChart(ctx, newChartData);
             }
         })

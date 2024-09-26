@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     row.humidity.toString().includes(searchTerm) || 
                     row.temperature.toString().includes(searchTerm) || 
                     row.light.toString().includes(searchTerm) || 
+                    row.Dash.toString().includes(searchTerm) ||   //thêm dash
                     matchDate(rowDateString, searchTerm) || 
                     matchTime(rowTimeString, searchTerm) ||
                     matchDate(rowFullDateTime, searchTerm)) 
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'humidity':
                 case 'temperature':
                 case 'light':
+                case 'Dash':
                     aValue = parseFloat(a[sortField]);
                     bValue = parseFloat(b[sortField]);
                     break;
@@ -114,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${row.humidity}</td>
                 <td>${row.temperature}</td>
                 <td>${row.light}</td>
+                <td>${row.Dash}</td>
                 <td>${formattedTime}</td>
             `;
             tableBody.appendChild(tr);

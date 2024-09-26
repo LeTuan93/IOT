@@ -1,8 +1,9 @@
 const express = require('express')
-const {getData,getWeb,getAction} = require('../controllers/homeControllers')
+const {getData,getWeb,getAction,getDataForSwagger} = require('../controllers/homeControllers')
 const router = express.Router()
 
 //Đinh tuyến API
+
 router.get('/api', getData)
 
 //Định tuyến API Status

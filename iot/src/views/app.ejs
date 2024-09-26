@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="/css/pagination.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
      <!-- Link to the icon -->
      <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
@@ -69,21 +71,22 @@
                 </div>
             </div>
         
-            <!-- <div class="card yellow">
+            <div class="card green" id="dash" >
                 <div class="card-header">
-                    <h4>Weight — User</h4>
-                    <img src="images/settings-icon.png" alt="Settings" class="settings-icon">
+                    <h4 class ="alert">DASH</h4>
+                    <img src="images/alert.gif" alt="Dash" class="Alert-icon">
                 </div>
                 <div class="card-body">
-                    <h2>79.76 <span>kg</span></h2>
+                    <h2 id ="Dash">Loading ...<span> µg/m³</span></h2>
                 </div>
-            </div> -->
+            </div>
         </div>
 
         <div class="container-2">
             <div class="item-2">
                 <canvas id="chartCanvas"></canvas>
             </div>
+
 
             <div class="item-3">
                 <div class="device light">
@@ -109,6 +112,7 @@
                 </div>
             </div>
         </div>
+        <!-- <canvas id="chartCanvas2"></canvas> -->
     </div>
 
     <div id="sensor-data" style ="display: none;">
@@ -125,6 +129,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
+                    <option value="time">Dash</option>
                     <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputSensor" placeholder="Enter search term...">
@@ -142,6 +147,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
+                    <option value="dash">Dash</option>
                     <option value="time">Time</option>
                 </select>
                 <button id="SU">ASC</button>
@@ -157,6 +163,7 @@
                         <th>Humidity (%)</th>
                         <th>Temperature (ºC)</th>
                         <th>Light (lux)</th>
+                        <th>Dash (µg/m³)</th>
                         <th>Time</th>
                     </tr>
                 </thead>
@@ -263,11 +270,12 @@
             </section>
         </main>
     </div>
-
     <script src="/js/dashboard/devices.js"></script>
     <script src="/js/sidebar.js"></script>
     <script src="/js/dashboard/chart.js"></script>
     <script src="/js/sensor_data/sensor_data.js"></script>
     <script src="/js/action_history/action_history.js"></script>
+    <script src="/js/dashboard/socket.js"></script>
+    <script src="/js/dashboard/chart2.js"></script>
 </body>
 </html>

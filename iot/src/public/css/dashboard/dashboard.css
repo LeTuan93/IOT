@@ -102,7 +102,7 @@
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 22%;
+  width: 20%;
   padding: 20px;
 }
 
@@ -123,7 +123,7 @@
   margin-left: 1rem;
 }
 
-.Humidity-icon, .Temperature-icon, .Light-icon {
+.Humidity-icon, .Temperature-icon, .Light-icon, .Alert-icon {
   width: 50px;
   height: 50px;
   margin-right: 24px;
@@ -157,4 +157,9 @@
 .yellow {
   background-color: #ffeb3b;
   color: white;
+}
+
+/* Thêm */
+.card-header .alert {
+  margin-left: 6rem;
 }
