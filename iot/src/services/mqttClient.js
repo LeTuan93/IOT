@@ -4,8 +4,8 @@ const { saveSensorData, saveDeviceAction } = require('../controllers/homeControl
 
 // MQTT client configuration
 const options = {
-    host: '192.168.198.41',
-    port: 1884,
+    host: '192.168.1.211',
+    port: 1883,
     username: 'B21DCAT205',
     password: '123'
 };

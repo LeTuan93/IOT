@@ -12,16 +12,19 @@ int ldrValue = 0;     // Biến để lưu giá trị đọc từ LDR
 // Define pin connections for the three devices
 #define LIGHT1_PIN 14   // GPIO14 tương ứng với D5 (Đèn)
 #define LIGHT2_PIN 12   // GPIO12 tương ứng với D6 (Quạt)
+
 #define LIGHT3_PIN 13   // GPIO13 tương ứng với D7 (Điều hòa)
 #define BLINK_LED_PIN 16 // GPIO16 tương ứng với D0 (Đèn nhấp nháy khi ánh sáng > 500)
 
 
 bool ledState = LOW;  // Trạng thái hiện tại của đèn nhấp nháy
 
+// bool manualControl = false;  // To track manual control of the light
+
 // Wi-Fi and MQTT information
-const char* ssid = "Saddd"; 
-const char* password = "Dangcap.";
-const char* mqtt_server = "192.168.198.41";  // Change this to your MQTT broker IP
+const char* ssid = "hellocacban"; 
+const char* password = "hicacban";
+const char* mqtt_server = "192.168.1.211";  // Change this to your MQTT broker IP
 const char* mqtt_username = "B21DCAT205";
 const char* mqtt_password = "123";
 
@@ -60,6 +63,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Control devices based on received MQTT message
   if (strcmp(topic, "home/devices/den") == 0) {
+    // manualControl = true;  // Turn on manual control when receiving MQTT command
     if (message == "ON") {
       digitalWrite(LIGHT1_PIN, HIGH);
       Serial.println("LED turned ON");
@@ -145,14 +149,23 @@ void loop() {
     return;
   }
 
-  // If light intensity is greater than 500, blink the LED
-  if (ldrValue > 500) {
-    ledState = !ledState;  // Toggle LED state
-    digitalWrite(BLINK_LED_PIN, ledState);
-    delay(500); // Blink interval of 500ms
-  } else {
-    digitalWrite(BLINK_LED_PIN, LOW);  // Turn off the LED if light is less than 500
-  }
+  // if (!manualControl && ldrValue > 500) {
+  //   ledState = !ledState;  // Chuyển đổi trạng thái LED nhấp nháy
+  //   digitalWrite(LIGHT1_PIN, ledState);
+
+  //   // Gửi trạng thái MQTT
+  //   if (ledState) {
+  //     client.publish("home/devices/den/status", "ON");
+  //     Serial.println("LED nhấp nháy - Trạng thái: ON");
+  //   } else {
+  //     client.publish("home/devices/den/status", "OFF");
+  //     Serial.println("LED nhấp nháy - Trạng thái: OFF");
+  //   }
+  //   delay(500); // Tốc độ nhấp nháy 500ms
+  // } else if (!manualControl) {
+  //   digitalWrite(LIGHT1_PIN, LOW);  // Tắt LED nếu ánh sáng < 500
+  // }
+
 
   // Prepare JSON payload
   String payload = "{\"light\":";
@@ -161,8 +174,8 @@ void loop() {
   payload += String(humidity);
   payload += ",\"temperature\":";
   payload += String(temperature);
-  payload += ",\"Dash\":";
-  payload += String(random(10, 60));
+  // payload += ",\"Dash\":";
+  // payload += String(random(0,200));
   payload += "}";
 
   // Publish the sensor data to MQTT topic

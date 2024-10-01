@@ -1,5 +1,5 @@
 const options = {
-    host: '192.168.198.41',
+    host: '192.168.1.211',
     port: 9001,
     username: 'B21DCAT205',
     password: '123',
@@ -70,14 +70,14 @@ function updateColor(elementId, value, minValue, maxValue, baseHue) {
     const element = document.getElementById(elementId);
     
     if (value < minValue) {
-        element.style.backgroundColor = `hsl(${baseHue}, 100%, 20%)`; // Màu tối hơn nhiều cho giá trị rất thấp
+        element.style.backgroundColor = `hsl(${baseHue}, 50%, 20%)`; // Màu tối hơn nhiều cho giá trị rất thấp
     } else if (value > maxValue) {
-        element.style.backgroundColor = `hsl(${baseHue}, 100%, 90%)`; // Màu sáng hơn nhiều cho giá trị rất cao
+        element.style.backgroundColor = `hsl(${baseHue}, 100%, 50%)`; // Màu sáng hơn nhiều cho giá trị rất cao
     } else {
         const percentage = (value - minValue) / (maxValue - minValue);
-        // Điều chỉnh độ sáng từ 20% (tối) đến 90% (sáng) cho dải màu rộng hơn
-        const lightness = 20 + (percentage * 70); // Sáng hơn khi giá trị cao hơn
-        const saturation = 70 + (percentage * 30); // Độ bão hòa tăng khi giá trị cao hơn
+        // Điều chỉnh độ sáng từ 30% (tối) đến 70% (sáng) cho dải màu rộng hơn
+        const lightness = 20 + (percentage * 50); // Sáng hơn khi giá trị cao hơn
+        const saturation = 60 + (percentage * 40); // Độ bão hòa tăng khi giá trị cao hơn
         
         element.style.backgroundColor = `hsl(${baseHue}, ${saturation}%, ${lightness}%)`;
     }
@@ -93,13 +93,13 @@ async function fetchDataAndUpdateUI() {
         document.getElementById('nhietdo').textContent = `${latestData.temperature}ºC`;
         document.getElementById('doam').textContent = `${latestData.humidity}%`;
         document.getElementById('anhsang').textContent = `${latestData.light} lux`;
-        document.getElementById('Dash').textContent = `${latestData.Dash} µg/m³`;
+        // document.getElementById('dobui').textContent = `${latestData.Dash} µg/m³`;
 
         // Base hues: Red for temperature, Blue for humidity, Yellow for light
         updateColor('tp', latestData.temperature, 0, 45, 0); // Red
-        updateColor('hm', latestData.humidity, 30, 70, 240); // Blue
-        updateColor('lt', latestData.light, 0, 1500, 60);    // Yellow
-        updateColor('Dash', latestData.Dash, 0, 100, 120); // Green
+        updateColor('hm', latestData.humidity, 20, 100, 240); // Blue
+        updateColor('lt', latestData.light, 0, 1024, 60);    // Yellow
+        // updateColor('dash', latestData.Dash, 0, 200, 120); // Green
     } catch (error) {
         console.error('Error fetching data:', error);
     }

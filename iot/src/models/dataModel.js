@@ -23,9 +23,14 @@ const getAllAction = (callback) => {
 };
 
 // Hàm lưu dữ liệu cảm biến
-const insertSensorData = (temperature, humidity, light, time,Dash, callback) => {
-    const query = 'INSERT INTO Devices (temperature, humidity, light, time,Dash) VALUES (?, ?, ?, ?,?)';
-    connection.query(query, [temperature, humidity, light, time,Dash], callback);
+// const insertSensorData = (temperature, humidity, light, time,Dash, callback) => {
+//     const query = 'INSERT INTO Devices (temperature, humidity, light, time,Dash) VALUES (?, ?, ?, ?,?)';
+//     connection.query(query, [temperature, humidity, light, time,Dash], callback);
+// };
+
+const insertSensorData = (temperature, humidity, light, time, callback) => {
+    const query = 'INSERT INTO Devices (temperature, humidity, light, time) VALUES (?, ?, ?, ?)';
+    connection.query(query, [temperature, humidity, light, time], callback);
 };
 
 // Hàm lưu trạng thái hành động của thiết bị

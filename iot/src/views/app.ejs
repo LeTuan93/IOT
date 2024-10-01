@@ -71,15 +71,15 @@
                 </div>
             </div>
         
-            <div class="card green" id="dash" >
+            <!-- <div class="card green" id="dash" >
                 <div class="card-header">
                     <h4 class ="alert">DASH</h4>
                     <img src="images/alert.gif" alt="Dash" class="Alert-icon">
                 </div>
                 <div class="card-body">
-                    <h2 id ="Dash">Loading ...<span> µg/m³</span></h2>
+                    <h2 id ="dobui">Loading ...<span> µg/m³</span></h2>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="container-2">
@@ -112,13 +112,22 @@
                 </div>
             </div>
         </div>
-        <!-- <canvas id="chartCanvas2"></canvas> -->
+        <!-- <div class="container-3">
+            <canvas id="chartCanvas2"></canvas>
+        </div> -->
     </div>
 
     <div id="sensor-data" style ="display: none;">
         <div class="sensor-header">
             <h1>SENSOR DATA</h1>
         </div>
+
+        <!-- <div class="condition">
+            <h3>Số lần nhiệt độ trong ngày vượt quá:</h3>
+            <input type="number" id="threshold-input" placeholder="Nhập nhiệt độ" />
+            <button id="check-button">OK</button>
+            <p id="temperature-count">Đang tải...</p>
+        </div> -->
         
         <div class="search-controls">
             <div class="search-section">
@@ -129,7 +138,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
-                    <option value="time">Dash</option>
+                    <!-- <option value="Dash">Dash</option> -->
                     <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputSensor" placeholder="Enter search term...">
@@ -147,7 +156,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
-                    <option value="dash">Dash</option>
+                    <!-- <option value="Dash">Dash</option> -->
                     <option value="time">Time</option>
                 </select>
                 <button id="SU">ASC</button>
@@ -163,7 +172,7 @@
                         <th>Humidity (%)</th>
                         <th>Temperature (ºC)</th>
                         <th>Light (lux)</th>
-                        <th>Dash (µg/m³)</th>
+                        <!-- <th>Dash (µg/m³)</th> -->
                         <th>Time</th>
                     </tr>
                 </thead>
@@ -276,6 +285,6 @@
     <script src="/js/sensor_data/sensor_data.js"></script>
     <script src="/js/action_history/action_history.js"></script>
     <script src="/js/dashboard/socket.js"></script>
-    <script src="/js/dashboard/chart2.js"></script>
+    <script src="/js/sensor_data/condition.js"></script>
 </body>
 </html>

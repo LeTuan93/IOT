@@ -22,14 +22,21 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('/api')
             .then(response => response.json())
             .then(fetchedData => {
+                // Kiểm tra và thay thế null cho các thuộc tính
+                fetchedData.forEach(row => {
+                    row.humidity = row.humidity !== null ? row.humidity : 0;
+                    row.temperature = row.temperature !== null ? row.temperature : 0;
+                    row.light = row.light !== null ? row.light : 0;
+                    // row.Dash = row.Dash !== null ? row.Dash : 0; // Đảm bảo Dash không phải là null
+                });
                 data = fetchedData;
-                totalPages = Math.ceil(data.length / limit); // Assuming 8 records per page
+                totalPages = Math.ceil(data.length / limit);
                 updateTable();
                 updatePagination();
             })
             .catch(error => console.error('Error fetching data:', error));
     };
-
+    
     const updateTable = () => {
         const filteredData = data.filter(row => {
             const rowDate = new Date(row.time);
@@ -52,7 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (field === 'time') {
                     return matchDate(rowDateString, term) || matchTime(rowTimeString, term) || matchDate(rowFullDateTime, term);
                 } else {
-                    return row[field] && row[field].toString().toLowerCase().includes(term.toLowerCase());
+                    if (row[field] === null || row[field] === undefined) {
+                        row[field] = 0;
+                    }
+                    return row[field].toString().toLowerCase().includes(term.toLowerCase());
                 }
             };
 
@@ -62,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     row.humidity.toString().includes(searchTerm) || 
                     row.temperature.toString().includes(searchTerm) || 
                     row.light.toString().includes(searchTerm) || 
-                    row.Dash.toString().includes(searchTerm) ||   //thêm dash
+                    // row.Dash.toString().includes(searchTerm) ||   //thêm dash
                     matchDate(rowDateString, searchTerm) || 
                     matchTime(rowTimeString, searchTerm) ||
                     matchDate(rowFullDateTime, searchTerm)) 
@@ -88,10 +98,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'humidity':
                 case 'temperature':
                 case 'light':
-                case 'Dash':
                     aValue = parseFloat(a[sortField]);
                     bValue = parseFloat(b[sortField]);
                     break;
+                // case 'Dash':
+                //     aValue = a[sortField] !== null && a[sortField] !== undefined ? parseFloat(a[sortField]) : 0;
+                //     bValue = b[sortField] !== null && b[sortField] !== undefined ? parseFloat(b[sortField]) : 0;
+                //     break;
                 default:
                     aValue = a[sortField].toString();
                     bValue = b[sortField].toString();
@@ -109,18 +122,21 @@ document.addEventListener('DOMContentLoaded', function () {
         tableBody.innerHTML = '';
         paginatedData.forEach(row => {
             const formattedTime = formatTime(row.time);
-
+            const humidity = row.humidity !== null ? row.humidity : 0;
+            const temperature = row.temperature !== null ? row.temperature : 0;
+            const light = row.light !== null ? row.light : 0;
+            // const Dash = row.Dash !== null ? row.Dash : 0; // Kiểm tra cho Dash
+        
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${row.id}</td>
-                <td>${row.humidity}</td>
-                <td>${row.temperature}</td>
-                <td>${row.light}</td>
-                <td>${row.Dash}</td>
+                <td>${humidity}</td>
+                <td>${temperature}</td>
+                <td>${light}</td>
                 <td>${formattedTime}</td>
             `;
             tableBody.appendChild(tr);
-        });
+        });        
     };
 
     // Format time for display

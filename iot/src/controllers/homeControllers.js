@@ -158,9 +158,14 @@ const getAction = (req, res) => {
 
 
 // Lưu dữ liệu cảm biến
-const saveSensorData = (temperature, humidity, light,Dash, callback) => {
+// const saveSensorData = (temperature, humidity, light,Dash, callback) => {
+//     const now = new Date();
+//     dataModel.insertSensorData(temperature, humidity, light, now,Dash, callback);
+// };
+
+const saveSensorData = (temperature, humidity, light, callback) => {
     const now = new Date();
-    dataModel.insertSensorData(temperature, humidity, light, now,Dash, callback);
+    dataModel.insertSensorData(temperature, humidity, light, now, callback);
 };
 
 // Lưu lịch sử hành động của thiết bị

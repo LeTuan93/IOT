@@ -160,6 +160,12 @@
 }
 
 /* Thêm */
-.card-header .alert {
+/* .card-header .alert {
   margin-left: 6rem;
 }
+
+#chartCanvas2 {
+  width: 880px !important; 
+  height: 453px !important;
+  margin-left: 70px;
+} */
