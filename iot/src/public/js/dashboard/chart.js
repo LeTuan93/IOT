@@ -1,13 +1,13 @@
 let chart; // Khai báo biến chart toàn cục
-// let chart2; //..
+let chart2; //..
 let labels = [];
-// let labels2 = []; //..
+let labels2 = []; //..
 
 let temperatureData = [];
 let humidityData = [];
 let lightData = [];
 // let dashData = []; //..
-// let dashData2 = []; // ...
+let dashData2 = []; // ...
 
 
 // Hàm này sẽ chuyển đổi dữ liệu từ API thành định dạng phù hợp với Chart.js
@@ -86,47 +86,47 @@ function transformData(apiData) {
 }
 
 // ...
-// function transformData2(apiData) {
-//     // Giới hạn số lượng điểm dữ liệu hiển thị
-//     const newData = apiData.slice(-1)[0]; // Chỉ lấy dữ liệu mới nhất
+function transformData2(apiData) {
+    // Giới hạn số lượng điểm dữ liệu hiển thị
+    const newData = apiData.slice(-1)[0]; // Chỉ lấy dữ liệu mới nhất
 
-//     // Chuyển đổi dữ liệu mới thành định dạng phù hợp
-//     const date = new Date(newData.time);
-//     const timeLabel = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-//     const dateLabel = date.toLocaleDateString();
-//     const newLabel = `${timeLabel}\n${dateLabel}`;
+    // Chuyển đổi dữ liệu mới thành định dạng phù hợp
+    const date = new Date(newData.time);
+    const timeLabel = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateLabel = date.toLocaleDateString();
+    const newLabel = `${timeLabel}\n${dateLabel}`;
 
-//     // Thêm dữ liệu mới vào các mảng
-//     labels2.push(newLabel);
-//     dashData2.push(newData.Dash);
+    // Thêm dữ liệu mới vào các mảng
+    labels2.push(newLabel);
+    dashData2.push(newData.Dash);
 
-//     // // Kiểm tra nếu giá trị light vượt quá 700
-//     // if (newData.light > 500) {
-//     //     alert(`Cảnh báo: Mức ánh sáng cao (${newData.light}) tại ${timeLabel} ${dateLabel}`);
-//     // }
+    // // Kiểm tra nếu giá trị light vượt quá 700
+    // if (newData.light > 500) {
+    //     alert(`Cảnh báo: Mức ánh sáng cao (${newData.light}) tại ${timeLabel} ${dateLabel}`);
+    // }
 
-//     // Giới hạn số lượng điểm dữ liệu hiển thị
-//     if (labels2.length > 10) {
-//         labels2.shift();
-//         dashData2.shift(); // Xóa điểm dữ liệu cũ nhất
+    // Giới hạn số lượng điểm dữ liệu hiển thị
+    if (labels2.length > 10) {
+        labels2.shift();
+        dashData2.shift(); // Xóa điểm dữ liệu cũ nhất
         
-//     }
+    }
 
-//     // Trả về dữ liệu đã chuyển đổi phù hợp với định dạng Chart.js
-//     return {
-//         labels: labels,
-//         datasets: [
-//             {
-//                 label: 'Dash (µg/m³)',
-//                 data: dashData,
-//                 borderColor: 'rgba(75, 192, 192, 1)',
-//                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
-//                 fill: false,
-//                 tension: 0.4,
-//             }
-//         ]
-//     };
-// }
+    // Trả về dữ liệu đã chuyển đổi phù hợp với định dạng Chart.js
+    return {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Dash (µg/m³)',
+                data: dashData2,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: false,
+                tension: 0.4,
+            }
+        ]
+    };
+}
 
 // Hàm này sẽ khởi tạo biểu đồ với dữ liệu lấy từ API
 function createChart(ctx, chartData) {
@@ -186,19 +186,19 @@ function fetchDataAndUpdateChart() {
         .then(response => response.json())
         .then(data => {
             const newChartData = transformData(data);
-            // const newChartDash = transformData2(data); // ...
+            const newChartDash = transformData2(data); // ...
             // Nếu biểu đồ đã tồn tại, cập nhật dữ liệu
             if (chart) {
                 updateChartData(chart, newChartData);
-                // updateChartData(chart2, newChartDash); //...
+                updateChartData(chart2, newChartDash); //...
 
             } else {
                 // Nếu chưa có biểu đồ, khởi tạo mới
                 const ctx = document.getElementById('chartCanvas').getContext('2d'); // Lấy context của canvas
                 chart = createChart(ctx, newChartData);
 
-                // const ctx2 = document.getElementById('chartCanvas2').getContext('2d'); // Lấy context của canvas
-                // chart2 = createChart(ctx2, newChartDash); // for dash
+                const ctx2 = document.getElementById('chartCanvas2').getContext('2d'); // Lấy context của canvas
+                chart2 = createChart(ctx2, newChartDash); // for dash
             }
         })
         .catch(error => {
@@ -217,18 +217,18 @@ function fetchDataAndUpdateChart() {
                 });
             }
 
-            // if (chart2) {
-            //     updateChartData(chart2, {
-            //         labels: ['No data'],
-            //         datasets: []
-            //     });
-            // } else {
-            //     const ctx2 = document.getElementById('chartCanvas2').getContext('2d');
-            //     chart2 = createChart(ctx2, {
-            //         labels: ['No data'],
-            //         datasets: []
-            //     });
-            // }
+            if (chart2) {
+                updateChartData(chart2, {
+                    labels: ['No data'],
+                    datasets: []
+                });
+            } else {
+                const ctx2 = document.getElementById('chartCanvas2').getContext('2d');
+                chart2 = createChart(ctx2, {
+                    labels: ['No data'],
+                    datasets: []
+                });
+            }
         });
 }
 

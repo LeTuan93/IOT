@@ -71,7 +71,7 @@
                 </div>
             </div>
         
-            <!-- <div class="card green" id="dash" >
+            <div class="card green" id="dash" >
                 <div class="card-header">
                     <h4 class ="alert">DASH</h4>
                     <img src="images/alert.gif" alt="Dash" class="Alert-icon">
@@ -79,7 +79,7 @@
                 <div class="card-body">
                     <h2 id ="dobui">Loading ...<span> µg/m³</span></h2>
                 </div>
-            </div> -->
+            </div>
         </div>
 
         <div class="container-2">
@@ -110,11 +110,20 @@
                         <button id="ac-off" class="button-class" onclick="toggleAC('off')">Turn Off</button>
                     </div>
                 </div>
+
+                <div class="device loudspeaker">
+                    <img id="lp" src="images/ledOff.png" alt="Loudspeaker">
+                    <div class="button-container">
+                        <button id="lp-on" class="button-class" onclick="toggleLP('on')">Turn On</button>
+                        <button id="lp-off" class="button-class" onclick="toggleLP('off')">Turn Off</button>
+                    </div>
+                </div>
+
             </div>
         </div>
-        <!-- <div class="container-3">
+        <div class="container-3">
             <canvas id="chartCanvas2"></canvas>
-        </div> -->
+        </div>
     </div>
 
     <div id="sensor-data" style ="display: none;">
@@ -122,12 +131,12 @@
             <h1>SENSOR DATA</h1>
         </div>
 
-        <!-- <div class="condition">
-            <h3>Số lần nhiệt độ trong ngày vượt quá:</h3>
-            <input type="number" id="threshold-input" placeholder="Nhập nhiệt độ" />
+        <div class="condition">
+            <h3>Số lần độ bụi vượt quá:</h3>
+            <input type="number" id="threshold-input" placeholder="Nhập độ bụi" />
             <button id="check-button">OK</button>
-            <p id="temperature-count">Đang tải...</p>
-        </div> -->
+            <p id="dash-count">Đang tải...</p>
+        </div>
         
         <div class="search-controls">
             <div class="search-section">
@@ -138,7 +147,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
-                    <!-- <option value="Dash">Dash</option> -->
+                    <option value="Dash">Dash</option>
                     <option value="time">Time</option>
                 </select>
                 <input type="text" id="inputSensor" placeholder="Enter search term...">
@@ -156,7 +165,7 @@
                     <option value="humidity">Humidity</option>
                     <option value="temperature">Temperature</option>
                     <option value="light">Light</option>
-                    <!-- <option value="Dash">Dash</option> -->
+                    <option value="Dash">Dash</option>
                     <option value="time">Time</option>
                 </select>
                 <button id="SU">ASC</button>
@@ -172,7 +181,7 @@
                         <th>Humidity (%)</th>
                         <th>Temperature (ºC)</th>
                         <th>Light (lux)</th>
-                        <!-- <th>Dash (µg/m³)</th> -->
+                        <th>Dash (µg/m³)</th>
                         <th>Time</th>
                     </tr>
                 </thead>
@@ -182,18 +191,38 @@
             </table>
         </div>
         
-        <div class="pagination">
+        <!-- <div class="pagination">
             <div></div>
             <button id="page-back-sensor">Back</button>
             <select id="page-selector-sensor"></select>
             <button id="page-next-sensor">Next</button>
             <input type="number" id="limit-input-sensor" min="1" value="8" />
+        </div> -->
+        <div class="pagination">
+            <div></div>
+            <button id="page-back-sensor">Back</button>
+            <select id="page-selector-sensor"></select>
+            <button id="page-next-sensor">Next</button>
+            <select id="limit-input-sensor">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+            </select>
         </div>
     </div>
     <div id="action-data" style ="display: none;">
         <div class="action-header">
             <h1>ACTION HISTORY</h1>
         </div>
+        
+        <!-- <div class="status-change">
+            <h3>Số lần thiết bị đã bật tắt:</h3>
+            <input type="text" id="device-id-input" placeholder="Nhập tên thiết bị" />
+            <button id="count-status-button">Kiểm tra</button>
+            <p id="status-change-count">Đang tải...</p>
+        </div> -->
         
         <div class="search-controls">
             <div class="search-section">
@@ -243,12 +272,26 @@
             </table>
         </div>
         
-        <div class="pagination">
+        <!-- <div class="pagination">
             <button id="page-back-action">Back</button>
             <select id="page-selector-action"></select>
             <button id="page-next-action">Next</button>
             <input type="number" id="limit-input-action" min="1" value="8" />
+        </div> -->
+
+        <div class="pagination">
+            <button id="page-back-action">Back</button>
+            <select id="page-selector-action"></select>
+            <button id="page-next-action">Next</button>
+            <select id="limit-input-action">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+            </select>
         </div>
+        
     </div>
     
     <div id='profile-page' class="profile-container" style ="display: none;">
@@ -286,5 +329,6 @@
     <script src="/js/action_history/action_history.js"></script>
     <script src="/js/dashboard/socket.js"></script>
     <script src="/js/sensor_data/condition.js"></script>
+    <script src="/js/sensor_data/status-change.js"></script>
 </body>
 </html>

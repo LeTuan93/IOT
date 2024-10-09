@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let sortOrder = 'ASC';
     let searchField = 'all';
     let searchTerm = '';
-    let limit = parseInt(limitInput.value) || 8; // Default limit
+    let limit = parseInt(limitInput.value) || 5; // Default limit (5 as a starting point)
 
     const fetchData = () => {
         fetch('/api')
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     row.humidity = row.humidity !== null ? row.humidity : 0;
                     row.temperature = row.temperature !== null ? row.temperature : 0;
                     row.light = row.light !== null ? row.light : 0;
-                    // row.Dash = row.Dash !== null ? row.Dash : 0; // Đảm bảo Dash không phải là null
+                    row.Dash = row.Dash !== null ? row.Dash : 0; // Đảm bảo Dash không phải là null
                 });
                 data = fetchedData;
                 totalPages = Math.ceil(data.length / limit);
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     row.humidity.toString().includes(searchTerm) || 
                     row.temperature.toString().includes(searchTerm) || 
                     row.light.toString().includes(searchTerm) || 
-                    // row.Dash.toString().includes(searchTerm) ||   //thêm dash
+                    row.Dash.toString().includes(searchTerm) ||   //thêm dash
                     matchDate(rowDateString, searchTerm) || 
                     matchTime(rowTimeString, searchTerm) ||
                     matchDate(rowFullDateTime, searchTerm)) 
@@ -101,10 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     aValue = parseFloat(a[sortField]);
                     bValue = parseFloat(b[sortField]);
                     break;
-                // case 'Dash':
-                //     aValue = a[sortField] !== null && a[sortField] !== undefined ? parseFloat(a[sortField]) : 0;
-                //     bValue = b[sortField] !== null && b[sortField] !== undefined ? parseFloat(b[sortField]) : 0;
-                //     break;
+                case 'Dash':
+                    aValue = a[sortField] !== null && a[sortField] !== undefined ? parseFloat(a[sortField]) : 0;
+                    bValue = b[sortField] !== null && b[sortField] !== undefined ? parseFloat(b[sortField]) : 0;
+                    break;
                 default:
                     aValue = a[sortField].toString();
                     bValue = b[sortField].toString();
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const humidity = row.humidity !== null ? row.humidity : 0;
             const temperature = row.temperature !== null ? row.temperature : 0;
             const light = row.light !== null ? row.light : 0;
-            // const Dash = row.Dash !== null ? row.Dash : 0; // Kiểm tra cho Dash
+            const Dash = row.Dash !== null ? row.Dash : 0; // Kiểm tra cho Dash
         
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${humidity}</td>
                 <td>${temperature}</td>
                 <td>${light}</td>
+                <td>${Dash}</td>
                 <td>${formattedTime}</td>
             `;
             tableBody.appendChild(tr);
@@ -167,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     limitInput.addEventListener('change', () => {
-        limit = parseInt(limitInput.value) || 8; // Update limit based on user input
+        limit = parseInt(limitInput.value) || 5; // Update limit based on user input
         currentPage = 1; // Reset to the first page on limit change
         fetchData();
     });
@@ -207,20 +208,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    pageSelector.addEventListener('change', (event) => {
-        currentPage = parseInt(event.target.value);
-        console.log("click page " );
+    pageSelector.addEventListener('change', () => {
+        currentPage = parseInt(pageSelector.value);
         fetchData();
     });
 
-    // Update sortField based on user selection
-    sortFieldSelector.addEventListener('change', (event) => {
-        sortField = event.target.value;
-        currentPage = 1; // Reset to the first page on new sort
-        console.log("click sort " );
+    sortFieldSelector.addEventListener('change', () => {
+        sortField = sortFieldSelector.value;
         fetchData();
     });
 
-    // Initial fetch
-    fetchData();
+    fetchData(); // Fetch initial data
 });

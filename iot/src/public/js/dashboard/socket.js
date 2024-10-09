@@ -52,5 +52,20 @@ socket.on('deviceStatus', (statusData) => {
             acButtonOn.classList.remove('active');
             saveStateToLocalStorage('ac', 'off'); // Lưu trạng thái vào local storage
         }
+    } else if (statusData.device_id === 'Louder Speaker') {
+        const lpButtonOn = document.querySelector('#lp-on');
+        const lpButtonOff = document.querySelector('#lp-off');
+        const lpImg = document.getElementById('lp');
+        if (statusData.status === 'Turned On') {
+            lpImg.src = 'images/ledOn.png';
+            lpButtonOn.classList.add('active');
+            lpButtonOff.classList.remove('active');
+            saveStateToLocalStorage('lp', 'on'); // Lưu trạng thái vào local storage
+        } else {
+            lpImg.src = 'images/ledOff.png';
+            lpButtonOff.classList.add('active');
+            lpButtonOn.classList.remove('active');
+            saveStateToLocalStorage('lp', 'off'); // Lưu trạng thái vào local storage
+        }
     }
 });

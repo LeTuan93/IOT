@@ -62,7 +62,7 @@
 }
 
 .button-class {
-  background-color: #4CAF50;
+  background-color: #f44336;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -71,12 +71,12 @@
 }
 
 .button-class.active {
-  background-color: #45a049;
+  background-color: #f44336;
   color: #ffffff;
 }
 
 .button-class:hover {
-  background-color: #45a049;
+  background-color: #f44336;
 }
 
 /* Add active state styling for buttons */
@@ -160,7 +160,7 @@
 }
 
 /* Thêm */
-/* .card-header .alert {
+.card-header .alert {
   margin-left: 6rem;
 }
 
@@ -168,4 +168,4 @@
   width: 880px !important; 
   height: 453px !important;
   margin-left: 70px;
-} */
+}

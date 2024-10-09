@@ -1,5 +1,5 @@
 const options = {
-    host: '192.168.1.211',
+    host: '192.168.198.41',
     port: 9001,
     username: 'B21DCAT205',
     password: '123',
@@ -14,6 +14,7 @@ client.on('connect', () => {
     client.subscribe('home/devices/den');
     client.subscribe('home/devices/quat');
     client.subscribe('home/devices/dieuhoa');
+    client.subscribe('home/devices/loa');
 });
 
 // Function to publish MQTT messages
@@ -51,6 +52,11 @@ function toggleAC(state) {
     sendMQTTMessage('home/devices/dieuhoa', state === 'on' ? 'ON' : 'OFF');
 }
 
+// Function to handle louder Speaker button clicks
+function toggleLP(state) {
+    sendMQTTMessage('home/devices/loa', state === 'on' ? 'ON' : 'OFF');
+}
+
 // Update functions for the state restoration
 function restoreDeviceState() {
     const ledState = loadStateFromLocalStorage('led');
@@ -61,6 +67,9 @@ function restoreDeviceState() {
 
     const acState = loadStateFromLocalStorage('ac');
     toggleAC(acState === 'on' ? 'on' : 'off');
+
+    const lpState = loadStateFromLocalStorage('lp');
+    toggleLP(lpState === 'on' ? 'on' : 'off');
 }
 
 // Call the restore function when the page loads
@@ -93,13 +102,13 @@ async function fetchDataAndUpdateUI() {
         document.getElementById('nhietdo').textContent = `${latestData.temperature}ºC`;
         document.getElementById('doam').textContent = `${latestData.humidity}%`;
         document.getElementById('anhsang').textContent = `${latestData.light} lux`;
-        // document.getElementById('dobui').textContent = `${latestData.Dash} µg/m³`;
+        document.getElementById('dobui').textContent = `${latestData.Dash} µg/m³`;
 
         // Base hues: Red for temperature, Blue for humidity, Yellow for light
         updateColor('tp', latestData.temperature, 0, 45, 0); // Red
         updateColor('hm', latestData.humidity, 20, 100, 240); // Blue
         updateColor('lt', latestData.light, 0, 1024, 60);    // Yellow
-        // updateColor('dash', latestData.Dash, 0, 200, 120); // Green
+        updateColor('dash', latestData.Dash, 0, 1000, 120); // Green
     } catch (error) {
         console.error('Error fetching data:', error);
     }

@@ -8,8 +8,7 @@ function showSection(sectionId) {
     document.getElementById(sectionId).style.display = 'block';
 }
 
-
-//sidebar function
+// Sidebar function
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const container = document.querySelector('.container');
@@ -24,6 +23,7 @@ function toggleSidebar() {
         toggleBtn.innerHTML = 'Menu'; // Left arrow when expanded
     }
 }
+
 // Hàm để ẩn thanh sidebar khi nhấp vào bên ngoài
 function handleClickOutside(event) {
     const sidebar = document.getElementById('sidebar');
@@ -37,5 +37,13 @@ function handleClickOutside(event) {
     }
 }
 
-// Đăng ký sự kiện click toàn bộ tài liệu
+// Đăng ký sự kiện click cho toàn bộ tài liệu
 document.addEventListener('click', handleClickOutside);
+
+// Đăng ký sự kiện click cho sidebar để mở rộng
+document.getElementById('sidebar').addEventListener('click', function(event) {
+    // Chỉ mở rộng nếu sidebar đang bị thu gọn
+    if (sidebar.classList.contains('collapsed')) {
+        toggleSidebar();
+    }
+});

@@ -4,7 +4,7 @@ const { saveSensorData, saveDeviceAction } = require('../controllers/homeControl
 
 // MQTT client configuration
 const options = {
-    host: '192.168.1.211',
+    host: '192.168.198.41',
     port: 1883,
     username: 'B21DCAT205',
     password: '123'
@@ -22,7 +22,8 @@ function setupMqttClient(io) {
             'home/sensors', // Sensor data
             'home/devices/den/status',   // Led status
             'home/devices/quat/status', // Fan status
-            'home/devices/dieuhoa/status' // Air Conditioner status
+            'home/devices/dieuhoa/status', // Air Conditioner status
+            'home/devices/loa/status' // Louder Speaker status
         ];
 
         topics.forEach(topic => {
@@ -66,7 +67,7 @@ function setupMqttClient(io) {
                     } else {
                         console.log('Device action saved');
                         console.log(topic, status);
-                        // Emit device status to clients
+                        // Emit device status to clients 
                         io.emit('deviceStatus', { device_id, status });
                     }
                 });
@@ -86,6 +87,8 @@ const convertDeviceID = (device_id) => {
             return 'Fan';
         case 'dieuhoa':
             return 'Air Conditioner';
+        case 'loa':
+            return 'Louder Speaker';
         default:
             return 'Unknown';
     }

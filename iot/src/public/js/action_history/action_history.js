@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const pageActionSelector = document.getElementById('page-selector-action');
     const actionTableBody = document.querySelector('#action_table tbody');
     const sortActionFieldSelector = document.getElementById('selectActionSort');
-    const limitInput = document.getElementById('limit-input-action'); // Limit input
+    const limitInput = document.getElementById('limit-input-action'); // Limit dropdown
 
     let actionData = [];
     let currentActionPage = 1;
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     limitInput.addEventListener('change', () => {
-        limit = parseInt(limitInput.value) || 8; // Update limit based on user input
+        limit = parseInt(limitInput.value) || 8; // Update limit based on user selection
         currentActionPage = 1; // Reset to the first page on limit change
         fetchActionData();
     });
@@ -177,18 +177,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    pageActionSelector.addEventListener('change', (event) => {
-        currentActionPage = parseInt(event.target.value);
+    pageActionSelector.addEventListener('change', (e) => {
+        currentActionPage = parseInt(e.target.value);
         fetchActionData();
     });
 
-    // Update sortField based on user selection
-    sortActionFieldSelector.addEventListener('change', (event) => {
-        sortActionField = event.target.value;
-        currentActionPage = 1; // Reset to the first page on new sort
-        fetchActionData();
-    });
-
-    // Initial fetch
-    fetchActionData();
+    fetchActionData(); // Initial data fetch
 });

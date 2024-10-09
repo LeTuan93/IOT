@@ -14,18 +14,20 @@ int ldrValue = 0;     // Biến để lưu giá trị đọc từ LDR
 #define LIGHT2_PIN 12   // GPIO12 tương ứng với D6 (Quạt)
 
 #define LIGHT3_PIN 13   // GPIO13 tương ứng với D7 (Điều hòa)
-#define BLINK_LED_PIN 16 // GPIO16 tương ứng với D0 (Đèn nhấp nháy khi ánh sáng > 500)
+// #define SPEAKER_PIN 15 // Chọn GPIO15 cho loa
+
 
 
 bool ledState = LOW;  // Trạng thái hiện tại của đèn nhấp nháy
 
 // bool manualControl = false;  // To track manual control of the light
+// bool manualControl2 = false;
 
 // Wi-Fi and MQTT information
-const char* ssid = "hellocacban"; 
-const char* password = "hicacban";
-const char* mqtt_server = "192.168.1.211";  // Change this to your MQTT broker IP
-const char* mqtt_username = "B21DCAT205";
+const char* ssid = "Saddd"; 
+const char* password = "Dangcap.";
+const char* mqtt_server = "192.168.198.41";  // Change this to your MQTT broker IP
+const char* mqtt_username = "B21DCAT149";
 const char* mqtt_password = "123";
 
 // Initialize WiFi and MQTT clients
@@ -86,6 +88,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
   if (strcmp(topic, "home/devices/dieuhoa") == 0) {
+    // manualControl2 = true;
     if (message == "ON") {
       digitalWrite(LIGHT3_PIN, HIGH);
       Serial.println("Air Conditioner turned ON");
@@ -96,6 +99,34 @@ void callback(char* topic, byte* payload, unsigned int length) {
       client.publish("home/devices/dieuhoa/status", "OFF");
     }
   }
+  // if (strcmp(topic, "home/devices/loa") == 0) {
+  //   if (message == "ON") {
+  //     digitalWrite(SPEAKER_PIN, HIGH);
+  //     Serial.println("Louder Speaker turned ON");
+  //     client.publish("home/devices/loa/status", "ON");
+  //   } else if (message == "OFF") {
+  //     digitalWrite(SPEAKER_PIN, LOW);
+  //     Serial.println("Louder Speaker turned OFF");
+  //     client.publish("home/devices/loa/status", "OFF");
+  //   }
+  // }
+  // if (strcmp(topic, "home/devices/all") == 0) {
+  //   if (message == "ON") {
+  //     digitalWrite(LIGHT1_PIN, HIGH);
+  //     digitalWrite(LIGHT2_PIN, HIGH);
+  //     digitalWrite(LIGHT3_PIN, HIGH);
+  //     client.publish("home/devices/den/status", "ON");
+  //     client.publish("home/devices/quat/status", "ON");
+  //     client.publish("home/devices/dieuhoa/status", "ON");
+  //   } else if (message == "OFF") {
+  //     digitalWrite(LIGHT1_PIN, LOW);
+  //     digitalWrite(LIGHT2_PIN, LOW);
+  //     digitalWrite(LIGHT3_PIN, LOW);
+  //     client.publish("home/devices/den/status", "OFF");
+  //     client.publish("home/devices/quat/status", "OFF");
+  //     client.publish("home/devices/dieuhoa/status", "OFF");
+  //   }
+  // }
 }
 
 // Function to reconnect to the MQTT broker
@@ -109,6 +140,8 @@ void reconnect() {
       client.subscribe("home/devices/den");
       client.subscribe("home/devices/quat");
       client.subscribe("home/devices/dieuhoa");
+      client.subscribe("home/devices/loa");
+      client.subscribe("home/devices/all");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -121,7 +154,7 @@ void reconnect() {
 void setup() {
   Serial.begin(115200);
   setup_wifi();
-  client.setServer(mqtt_server, 1883);
+  client.setServer(mqtt_server, 1888);
   client.setCallback(callback);
 
   // Initialize DHT sensor
@@ -131,7 +164,7 @@ void setup() {
   pinMode(LIGHT1_PIN, OUTPUT);  // Đèn
   pinMode(LIGHT2_PIN, OUTPUT);  // Quạt
   pinMode(LIGHT3_PIN, OUTPUT);  // Điều hòa
-  pinMode(BLINK_LED_PIN, OUTPUT); // Đèn nhấp nháy khi ánh sáng > 500
+  // pinMode(SPEAKER_PIN, OUTPUT); // Loa
 }
 
 void loop() {
@@ -143,11 +176,30 @@ void loop() {
   ldrValue = analogRead(ldrPin);
   float humidity = dht.readHumidity();
   float temperature = dht.readTemperature();
+  float dash = random(0,1000);
   // Check if any reading failed
   if (isnan(humidity) || isnan(temperature)) {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
+
+  // if (dash > 800) {
+  //   ledState = !ledState;  // Chuyển đổi trạng thái LED nhấp nháy
+  //   digitalWrite(SPEAKER_PIN, ledState);
+
+  //   // Gửi trạng thái MQTT
+  //   if (ledState) {
+  //     client.publish("home/devices/loa/status", "ON");
+  //     Serial.println("Cảnh báo nhấp nháy - Trạng thái: ON");
+  //   } else {
+  //     client.publish("home/devices/loa/status", "OFF");
+  //     Serial.println("Cảnh báo nhấp nháy - Trạng thái: OFF");
+  //   }
+  // } else {
+  //   digitalWrite(SPEAKER_PIN, LOW);  // Tắt LED nếu ánh sáng < 500
+  //   client.publish("home/devices/loa/status", "OFF");
+  //   Serial.println("Cảnh báo nhấp nháy - Trạng thái: OFF");
+  // }
 
   // if (!manualControl && ldrValue > 500) {
   //   ledState = !ledState;  // Chuyển đổi trạng thái LED nhấp nháy
@@ -161,11 +213,23 @@ void loop() {
   //     client.publish("home/devices/den/status", "OFF");
   //     Serial.println("LED nhấp nháy - Trạng thái: OFF");
   //   }
-  //   delay(500); // Tốc độ nhấp nháy 500ms
   // } else if (!manualControl) {
   //   digitalWrite(LIGHT1_PIN, LOW);  // Tắt LED nếu ánh sáng < 500
+  //   client.publish("home/devices/den/status", "OFF");
+  //   Serial.println("LED nhấp nháy - Trạng thái: OFF");
   // }
 
+  // if (!manualControl2){
+  //   if (ldrValue > 700) {
+  //     digitalWrite(SPEAKER_PIN, HIGH);  // Bật loa
+  //     Serial.println("Loa đã được bật do ánh sáng lớn hơn 700.");
+  //     client.publish("home/devices/loa/status", "ON");
+  //   } else {
+  //     digitalWrite(SPEAKER_PIN, LOW);   // Tắt loa
+  //     Serial.println("Loa đã tắt do ánh sáng thấp hơn 700.");
+  //     client.publish("home/devices/loa/status", "OFF");
+  //   }
+  // }
 
   // Prepare JSON payload
   String payload = "{\"light\":";
@@ -175,7 +239,7 @@ void loop() {
   payload += ",\"temperature\":";
   payload += String(temperature);
   // payload += ",\"Dash\":";
-  // payload += String(random(0,200));
+  // payload += String(dash);
   payload += "}";
 
   // Publish the sensor data to MQTT topic
