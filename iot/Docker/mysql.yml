@@ -1,0 +1,10 @@
+services:
+  db-mysql:
+    environment:
+    - MYSQL_DATABASE=iot
+    - MYSQL_ROOT_PASSWORD=123456
+    image: mysql:5.7.40
+    ports:
+    - 3307:3306
+    restart: always
+version: '3.8'

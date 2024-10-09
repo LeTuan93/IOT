@@ -1,0 +1,30 @@
+nhiệt độ vưượt quá;
+   1, app.ejs: 134-> 139
+   2, condition.js: all
+   3, sensor_data.css: 137-> hết
+them độ bụi (dash)
+   1, app.ejs: 74->82,150,168,184
+   2, sensor_data.js: 30,75,104->107,128
+   3, devices.js: 105,111
+   4, dataModel.js: 26->29 (comment 31->34)
+   5, homeControllers: 161-164 (comment 166->169)
+   6, Dbeaver : thêm cột Dash
+   7, mqttServer.ino; 222->223 -> nap lai code mqttServer.ino
+ Chỉnh biểu đồ thêm Dash:
+   1, chart.js: 9, 30,44,76-> 83
+ Thêm biểu đồ riêng:
+   1, app.ejs: 124->126
+   2, chart.js; 2,4,10,89->129,189,193,200->201,220->231
+   3, dashboarch.css: 163-> hết
+ Cảnh báo đèn nhấp nháy
+   1, mqttServer.ino: 23,68,185->201
+ Thêm 1 thiết bị (loa):
+   1, app.ejs: 114-> 120
+   2, devices.js: 17,56-> 58, 71-> 72
+   3, mqttClient.js: 26,90->91
+   4, mqttServer.ino: 17, 102->112, 167,143
+Caảnh báo bật đen:
+   1, mqttServer.ino: 24,91,203-213
+Số lần bật tắt thiết bị:
+   1, app.ejs: 220-> 225
+   2, status-change.js: all
