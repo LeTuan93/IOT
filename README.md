@@ -7,9 +7,9 @@ https://www.youtube.com/watch?v=JA1cYRDVpQM&t=495s
 https://www.youtube.com/watch?v=wB785GJUd6s&t=122s
 https://www.youtube.com/watch?v=4SAcDS2ZBTM&t=127s
 3. Học mosquitto bao gồm cài đặt, cấu hình , tạo tài khoản, kết nối pub sub tại https://cedalo.com/blog/how-to-install-mosquitto-mqtt-broker-on-windows/ (chú ý để chạy được cấu hình cài đặt chạy mosquitto -v -c mosquitto.conf tại /Program Files/mosquitto)
-4. Clone project về \n
-Bước 1: Clone project về từ github, cd vào thư mục iot, chạy npm i.
-Bước 2: Tải Dbeaver và Docker như trong chuỗi video tại node.js (vid 27 và 29)
+4. Clone project về 
+4.1 Bước 1: Clone project về từ github, cd vào thư mục iot, chạy npm i.
+4.2 Bước 2: Tải Dbeaver và Docker như trong chuỗi video tại node.js (vid 27 và 29)
 Bước 3: Trong Deabver sử dụng các câu lệnh sau đẻ tạo bảng (lý do tạo vì trong code của project sử dụng 2 bảng này)
 CREATE TABLE Actions (
     id INT AUTO_INCREMENT PRIMARY KEY,
